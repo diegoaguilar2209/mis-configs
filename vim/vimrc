@@ -1,0 +1,23 @@
+" Minimal vimrc for servers or anyone who keeps classic Vim. No plugins.
+" On your machine use Neovim (nvim): same keys, plus LSP, fuzzy finder and formatting.
+set nocompatible
+set encoding=utf-8
+scriptencoding utf-8
+syntax on
+filetype plugin indent on
+set number relativenumber
+set expandtab shiftwidth=4 tabstop=4 smartindent
+set ignorecase smartcase incsearch hlsearch
+set scrolloff=8 signcolumn=yes colorcolumn=88
+set splitright splitbelow
+set mouse=a
+set hidden
+set undofile undodir=~/.vim/undo//
+silent! call mkdir(expand('~/.vim/undo'), 'p')
+set wildmenu wildmode=longest:full,full
+set list listchars=tab:»\ ,trail:·
+let mapleader = " "
+nnoremap <leader>w :write<CR>
+nnoremap <leader>q :quit<CR>
+nnoremap <Esc> :nohlsearch<CR>
+autocmd FileType lua,yaml,json,toml,markdown setlocal shiftwidth=2 tabstop=2

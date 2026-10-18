@@ -1,0 +1,31 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint shell scripts
+        run: sudo apt-get install -y -qq shellcheck && shellcheck install.sh bin/* shell/init.bash
+      - name: Install on a clean machine
+        run: ./install.sh --yes
+      - name: Neovim starts without errors
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          nvim --headless +'lua vim.defer_fn(function()
+            local m = vim.api.nvim_exec2("messages", { output = true }).output
+            if m:match("E%d+:") or m:match("Error") then print(m); vim.cmd("cquit 1") end
+            vim.cmd("qa!")
+          end, 3000)'
+      - name: tmux config loads
+        run: |
+          tmux -f "$HOME/.config/tmux/tmux.conf" new-session -d -s ci
+          test "$(tmux show-options -gv prefix)" = "C-a"
+          tmux kill-server
+      - name: Vim fallback loads
+        run: vim -u vim/vimrc -es -c q
+      - name: Doctor
+        run: PATH="$HOME/.local/bin:$PATH" dotfiles doctor

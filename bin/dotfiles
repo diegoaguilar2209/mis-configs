@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# dotfiles: small helper for the team setup.
+#   dotfiles update   pull the latest team config and re-run the installer
+#   dotfiles doctor   show installed versions and common problems
+#   dotfiles edit     open the repo in Neovim
+set -euo pipefail
+DOTFILES="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+
+case "${1:-help}" in
+  update)
+    git -C "$DOTFILES" pull --ff-only
+    "$DOTFILES/install.sh" --yes
+    ;;
+  doctor)
+    # shellcheck source=../versions.env
+    source "$DOTFILES/versions.env"
+    check() { # name expected-version command...
+      local name=$1 want=$2 got; shift 2
+      if command -v "$name" >/dev/null; then
+        got=$("$@" 2>/dev/null | grep -oE 'v?[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1)
+        printf '  %-12s %-10s (team: %s)\n' "$name" "$got" "$want"
+      else
+        printf '  %-12s MISSING (team: %s)\n' "$name" "$want"
+      fi
+    }
+    echo "Tools"
+    check nvim "$NVIM_VERSION" nvim --version
+    check tmux "3.4+" tmux -V
+    check tree-sitter "$TREE_SITTER_VERSION" tree-sitter --version
+    check fzf "$FZF_VERSION" fzf --version
+    check rg "apt" rg --version
+    check fd "apt" fd --version
+    check zoxide "$ZOXIDE_VERSION" zoxide --version
+    check eza "$EZA_VERSION" eza --version
+    check starship "$STARSHIP_VERSION" starship --version
+    check lazygit "$LAZYGIT_VERSION" lazygit --version
+    check delta "$DELTA_VERSION" delta --version
+    check node "v$NODE_MAJOR" node --version
+    check claude "optional" claude --version
+    echo "Checks"
+    [[ "$(readlink -f "$HOME/.config/nvim")" == "$DOTFILES/nvim" ]] && echo "  nvim config linked" || echo "  nvim config NOT linked (run install.sh)"
+    [[ "$(readlink -f "$HOME/.config/tmux/tmux.conf")" == "$DOTFILES/tmux/tmux.conf" ]] && echo "  tmux config linked" || echo "  tmux config NOT linked (run install.sh)"
+    [[ "$DOTFILES" == /mnt/* ]] && echo "  WARNING: repo is on the Windows disk; move it into WSL (~/dotfiles)"
+    git -C "$DOTFILES" fetch -q 2>/dev/null && [[ -n "$(git -C "$DOTFILES" log 'HEAD..@{u}' --oneline 2>/dev/null)" ]] && echo "  Updates available: dotfiles update"
+    echo "Neovim health: run :checkhealth inside nvim"
+    ;;
+  edit) cd "$DOTFILES" && exec nvim . ;;
+  *) sed -n '2,5p' "$0" | sed 's/^# \{0,1\}//' ;;
+esac
