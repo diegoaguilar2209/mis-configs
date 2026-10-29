@@ -256,4 +256,4 @@ fi
 
 echo
 say "Done. Open a new terminal (or run: source ~/.bashrc), then: tmux, and inside it: nvim"
-[[ $IS_WSL -eq 1 ]] && say "Windows side (font and terminal): see windows/README.md"
+if [[ $IS_WSL -eq 1 ]]; then say "Windows side (font and terminal): see windows/README.md"; fi
