@@ -11,7 +11,7 @@
 | `Alt-c` | Entrar a una subcarpeta (fzf) |
 | `ll`, `lt` | Listar con detalles y estado de git / árbol |
 | `lg` | lazygit |
-| `mkenv`, `lock` | Crear `env/` y fijar dependencias con pip-tools |
+| `mkenv`, `lock` | Crear `env/` y fijar dependencias (uv, o pip-tools si no hay uv) |
 | `mis-configs doctor` / `update` / `import` / `status` | Revisar / actualizar / guardar cambios hechos en ~/.tmux o ~/.vim / ver qué falta subir |
 
 ## tmux (prefijo Ctrl-a)
@@ -57,7 +57,14 @@
 | `\sn` `\sp` `\se` `\sl` | Siguiente, anterior, abrir y listar la location list |
 | `]c` / `[c` | Siguiente / anterior cambio de git |
 | `\gp` `\gs` `\gr` `\gb` | Ver, preparar, deshacer cambio / blame |
+| `\gB` / `\gd` | Blame del archivo / diff contra git (fugitive) |
 | `\gg` | lazygit |
+| `Tab` / `Ctrl-j` `Ctrl-k` | Expandir snippet / saltar entre sus campos |
+| `\tt` `\tf` `\ts` `\tl` `\tv` | Test bajo el cursor / archivo / todos / repetir / ir al archivo de tests |
+| `F5` `F9` `\B` | Depurar o continuar / punto de parada / con condición |
+| `F10` `F6` `F7` `F8` `\td` | Siguiente / entrar / salir / paneles / depurar el test bajo el cursor |
+| `\ac` `\af` `\ab` `\as` | Claude: abrir / enfocar / agregar archivo / enviar selección |
+| `\aa` `\ad` | Aceptar / rechazar el cambio que propone Claude |
 | `\cf` / `:FormatToggle` | Formatear / activar o desactivar el formateo al guardar |
 | `gcc` / `gc` (visual) | Comentar línea / selección |
 | `:Mason`, `:PackUpdate`, `:checkhealth` | Servidores, actualizar plugins, diagnóstico |

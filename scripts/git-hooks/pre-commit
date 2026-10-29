@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Block commits that contain secrets (keys, tokens, passwords). This repo is public.
+# A false positive: add `# gitleaks:allow` at the end of that line, or commit with --no-verify once.
+if command -v gitleaks >/dev/null 2>&1; then
+  exec gitleaks git --pre-commit --staged --redact --no-banner --verbose
+else
+  echo "gitleaks not installed (run ./install.sh): commit not scanned for secrets" >&2
+fi

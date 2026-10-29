@@ -19,3 +19,10 @@ Primero: `mis-configs doctor`. Muestra versiones, enlaces y si hay algo pendient
 | `git push`: `Permission denied (publickey)` | `~/.ssh/config` usa una llave que GitHub no tiene | `ssh -vT git@github.com` muestra la llave ofrecida; registrar su `.pub` en GitHub → Settings → SSH keys |
 | `git push`: `Repository not found` | El repo no existe aún en GitHub | Crearlo vacío en github.com/new |
 | La prueba de GitHub sale en rojo | Algo no instala en una máquina limpia | `gh run view --log-failed` |
+| `git commit` se bloquea con `leaks found` | gitleaks encontró algo que parece un secreto | Sacarlo del archivo; si es falso positivo, `git commit --no-verify` |
+| `gitleaks not installed: commit not scanned` | Falta gitleaks en esta máquina | `./install.sh` |
+| El PR mensual de versiones falla con `not permitted to create pull requests` | Falta el permiso en GitHub | Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests" |
+| `\tf` dice `No module named pytest` | El `env/` del proyecto no tiene pytest | `pip install pytest` (o agregarlo a `requirements-dev.in` y `lock`) |
+| F5 no para en el punto de parada | Falta debugpy | `:MasonInstall debugpy`, o `pip install debugpy` en `env/` |
+| `\ac` no abre Claude | `claude` no está en el PATH | `claude --version` en la terminal; instalarlo según la guía de Claude Code |
+| `mkenv` / `lock` lentos | No está uv | `./install.sh` lo instala; `uv --version` para revisar |

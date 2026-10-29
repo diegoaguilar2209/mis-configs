@@ -8,24 +8,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # gitleaks scans the whole history
       - name: Lint shell scripts
-        run: sudo apt-get install -y -qq shellcheck && shellcheck install.sh bin/* shell/init.bash scripts/*.sh
+        run: sudo apt-get install -y -qq shellcheck && shellcheck install.sh bin/* shell/init.bash scripts/*.sh scripts/git-hooks/*
       - name: Install on a clean machine
         run: ./install.sh --yes
-      - name: Neovim starts without errors
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          nvim --headless +'lua vim.defer_fn(function()
-            local m = vim.api.nvim_exec2("messages", { output = true }).output
-            if m:match("E%d+:") or m:match("Error") then print(m); vim.cmd("cquit 1") end
-            vim.cmd("qa!")
-          end, 3000)'
-      - name: tmux config loads
-        run: |
-          tmux new-session -d -s ci
-          test "$(tmux show-options -gv prefix)" = "C-a"
-          tmux kill-server
-      - name: vim loads my vimrc without errors
-        run: vim -N -E -s -u "$HOME/.vimrc" -c 'qa!' </dev/null
-      - name: Doctor
-        run: PATH="$HOME/.local/bin:$PATH" mis-configs doctor
+      - name: No secrets in the repo (gitleaks)
+        run: ~/.local/bin/gitleaks git --redact --no-banner --verbose
+      - name: Neovim, tmux, vim and doctor
+        run: scripts/ci-checks.sh

@@ -12,6 +12,9 @@
 | F4 funciones | Tagbar (necesita ctags) | aerial: misma barra con imports, constantes, variables, clases, métodos y funciones |
 | Buscar | CtrlP | fzf-lua: mismos atajos (`,e` `,g` `,m`…), más rápido, y búsqueda de texto en todo el proyecto |
 | Formatear | A mano | isort + black al guardar (`:FormatToggle` lo apaga) |
+| Snippets | UltiSnips + vim-snippets | Los mismos snippets de siempre (friendly-snippets), con `Tab` |
+| git | fugitive + signify | fugitive + gitsigns |
+| Tests y depurar | — | pytest y depurador con puntos de parada, sin salir del editor |
 | Versiones de plugins | Las que bajen ese día | Fijas en `nvim-pack-lock.json`: iguales en todas las laptops |
 
 ## Se ve como mi vim
@@ -67,6 +70,11 @@ En Python, F4 muestra lo mismo que Tagbar: imports, constantes (MAYÚSCULAS), va
 | `grn` / `gra` | Renombrar en todo el proyecto / acciones de código |
 | `]c` / `[c`, `\gp` | Saltar entre cambios de git / ver el cambio |
 | `\gg` | lazygit |
+| `\gB` / `\gd` | Blame de todo el archivo / diff del archivo contra git (fugitive, igual que en vim: `:Git`, `:Gread`…) |
+| `Tab` (escribiendo) | Expandir un snippet: `def`, `class`, `for`, `main`… (como UltiSnips; `Ctrl-j` / `Ctrl-k` saltan entre campos) |
+| `\tt` `\tf` `\ts` | Correr tests con pytest |
+| `F5` `F9` `F10` `F6` `F7` `F8` | Depurador (detalle en [Uso diario](uso-diario.md#tests-y-depurador-neovim-python)) |
+| `\ac` `\as` `\aa` | Claude Code dentro del editor (detalle en [Uso diario](uso-diario.md#con-claude-code)) |
 | `\cf` | Formatear |
 | `\` o `,` y esperar | Lista de atajos disponibles |
 

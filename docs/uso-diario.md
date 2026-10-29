@@ -45,18 +45,41 @@ Mi `.vimrc` tal cual: NERDTree en `F3`, Tagbar en `F4`, CtrlP en `,e`, YouComple
 | `lg` | lazygit |
 | `gs`, `gl` | git status corto / log en grafo |
 
-## Python (env/ + pip-tools)
+## Python (env/ + requirements)
 
 | Comando | Qué hace |
 | --- | --- |
-| `mkenv` | Crea `env/`, instala pip-tools y sincroniza `requirements*.txt` si existen |
-| `lock` | `pip-compile` de cada `requirements*.in` y `pip-sync` |
+| `mkenv` | Crea `env/` e instala `requirements*.txt` si existen |
+| `lock` | Compila cada `requirements*.in` a su `.txt` con versiones fijas y deja `env/` exactamente así (si no hay `env/`, lo crea) |
 | (automático) | Al entrar a una carpeta con `env/`, se activa; al salir, se desactiva |
 
-Neovim usa el black, isort y basedpyright del `env/` del proyecto si existen; si no, los suyos.
+Usan **uv** (10 a 100 veces más rápido que pip); si una máquina no lo tiene, usan pip-tools. Los archivos son los mismos de siempre (`requirements.in` → `requirements.txt`), así que el resto del equipo puede seguir con pip.
+
+Neovim usa el black, isort, basedpyright, pytest y debugpy del `env/` del proyecto si existen; si no, los suyos.
 
 ## Con Claude Code
 
-- Divido con `prefix |` y abro `claude` en el panel nuevo, junto al editor.
+Dos formas, según el momento:
+
+- **Dentro de Neovim:** `\ac` abre Claude en un panel a la derecha, ya conectado al editor: ve el archivo abierto y lo que tengo seleccionado. `\as` (con texto seleccionado) le manda esa parte, `\ab` le agrega el archivo actual. Cuando propone un cambio, lo muestra como diff en Neovim: `\aa` acepta, `\ad` rechaza.
+- **En un panel de tmux:** `prefix |` y `claude`. Para conectarlo a un Neovim abierto, escribo `/ide` dentro de Claude y elijo Neovim.
+
+En los dos casos:
+
 - Neovim recarga solo los archivos que Claude modifica (vim avisa y pregunta).
-- Dentro de tmux, abro Claude siempre desde la carpeta del proyecto, nunca desde `~`.
+- Abro Claude siempre desde la carpeta del proyecto, nunca desde `~`.
+- Shift-Enter hace salto de línea en Claude también dentro de tmux (`extended-keys` en `tmux.conf`).
+
+## Tests y depurador (Neovim, Python)
+
+| Atajo | Qué hace |
+| --- | --- |
+| `\tt` / `\tf` / `\ts` | Correr el test bajo el cursor / del archivo / todos (pytest, en un panel abajo) |
+| `\tl` / `\tv` | Repetir el último / ir al último archivo de tests |
+| `F9` | Poner o quitar un punto de parada (`\B`: con condición) |
+| `F5` | Depurar el archivo (o continuar si ya está parado) |
+| `\td` | Depurar el test bajo el cursor |
+| `F10` / `F6` / `F7` | Siguiente línea / entrar a la función / salir de ella |
+| `F8` | Mostrar u ocultar los paneles del depurador (variables, pila, puntos de parada) |
+
+El depurador usa el Python de `env/` si existe.

@@ -9,7 +9,7 @@ local has_node = vim.fn.executable('npm') == 1
 local servers = { 'basedpyright', 'lua_ls' }
 if has_node then vim.list_extend(servers, { 'bashls', 'yamlls', 'jsonls', 'dockerls' }) end
 
-local tools = { 'black', 'isort', 'sqlfluff', 'shfmt', 'stylua' }
+local tools = { 'black', 'isort', 'sqlfluff', 'shfmt', 'stylua', 'debugpy' }
 
 -- PATH = append: a project's env/ (black, isort...) wins over Mason's copies
 require('mason').setup({ PATH = 'append' })

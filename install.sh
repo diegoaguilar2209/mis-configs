@@ -132,6 +132,22 @@ delta_target=$([[ $ARCH == x86_64 ]] && echo x86_64-unknown-linux-musl || echo a
 install_tar_bin delta "$DELTA_VERSION" \
   "https://github.com/dandavison/delta/releases/download/$DELTA_VERSION/delta-$DELTA_VERSION-$delta_target.tar.gz"
 
+# uv (fast pip / pip-tools replacement; mkenv and lock use it) ships uv and uvx in one archive
+uv_target=$([[ $ARCH == x86_64 ]] && echo x86_64-unknown-linux-gnu || echo aarch64-unknown-linux-gnu)
+if [[ "$(installed_version uv)" != "$UV_VERSION" || ! -x "$BIN/uv" ]]; then
+  tmp=$(mktemp -d)
+  if download "https://github.com/astral-sh/uv/releases/download/$UV_VERSION/uv-$uv_target.tar.gz" "$tmp/uv.tgz"; then
+    tar -xzf "$tmp/uv.tgz" -C "$tmp"
+    install -m 0755 "$tmp/uv-$uv_target/uv" "$tmp/uv-$uv_target/uvx" "$BIN/"
+    mark_installed uv "$UV_VERSION"
+    say "uv $UV_VERSION"
+  fi
+  rm -rf "$tmp"
+fi
+gl_arch=$([[ $ARCH == x86_64 ]] && echo x64 || echo arm64)
+install_tar_bin gitleaks "$GITLEAKS_VERSION" \
+  "https://github.com/gitleaks/gitleaks/releases/download/v$GITLEAKS_VERSION/gitleaks_${GITLEAKS_VERSION}_linux_$gl_arch.tar.gz"
+
 if [[ $WITH_NODE -eq 1 ]]; then
   node_arch=$([[ $ARCH == x86_64 ]] && echo x64 || echo arm64)
   base="https://nodejs.org/dist/latest-v$NODE_MAJOR.x"
@@ -201,6 +217,9 @@ if ! grep -q "$marker" "$HOME/.bashrc" 2>/dev/null; then
   printf '\n%s\n[ -f "%s/shell/init.bash" ] && source "%s/shell/init.bash"\n' "$marker" "$DOTFILES" "$DOTFILES" >> "$HOME/.bashrc"
   say "Added shell init to ~/.bashrc"
 fi
+
+# This repo's own git hook: gitleaks blocks commits that contain keys or tokens (the repo is public)
+git -C "$DOTFILES" config core.hooksPath scripts/git-hooks
 
 # Git: shared settings are included; name and email stay personal
 if ! git config --global --get-all include.path 2>/dev/null | grep -qx "$DOTFILES/git/gitconfig"; then

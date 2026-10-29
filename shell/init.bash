@@ -42,18 +42,37 @@ alias gs='git status -sb'
 alias gl='git log --oneline --graph --decorate -20'
 
 # --- Python: env/ + pip-tools (my convention) - ------------------------------
-# mkenv: create env/ with pip-tools and install from requirements*.txt if present
+# mkenv: create env/ and install requirements*.txt. Uses uv (much faster) when available, else pip-tools.
+# The files stay pip-tools compatible: requirements.in -> requirements.txt, same as always.
 mkenv() {
-  python3 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools
   local reqs=(requirements*.txt)
-  [[ -e "${reqs[0]}" ]] && pip-sync "${reqs[@]}"
+  if command -v uv >/dev/null; then
+    uv venv --seed --quiet env && source env/bin/activate || return 1
+    [[ -e "${reqs[0]}" ]] && uv pip sync --quiet "${reqs[@]}"
+  else
+    python3 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools || return 1
+    [[ -e "${reqs[0]}" ]] && pip-sync "${reqs[@]}"
+  fi
   echo "env/ ready ($(python --version))"
 }
-# lock: compile requirements*.in into .txt and sync the environment
+# lock: compile each requirements*.in into its .txt and sync env/ to exactly those versions
 lock() {
   local f
-  for f in requirements*.in; do [[ -e "$f" ]] && pip-compile -q "$f"; done
-  pip-sync requirements*.txt
+  for f in requirements*.in; do
+    [[ -e "$f" ]] || continue
+    if command -v uv >/dev/null; then
+      uv pip compile --quiet "$f" -o "${f%.in}.txt"
+    else
+      pip-compile -q "$f"
+    fi
+  done
+  # No env/ yet: create it (mkenv also syncs). Otherwise sync the existing one.
+  if [[ ! -d env ]]; then mkenv; return; fi
+  if command -v uv >/dev/null; then
+    uv pip sync --quiet --python env/bin/python requirements*.txt
+  else
+    env/bin/pip-sync requirements*.txt
+  fi
 }
 # Activate env/ automatically when entering a project that has one
 _auto_env() {

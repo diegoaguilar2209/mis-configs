@@ -1,0 +1,44 @@
+# Once a month: look for new versions of the tools in versions.env, install them on a
+# clean machine and, if everything works, open a PR. I review it and merge (or close it).
+# Needs: Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".
+name: versions
+on:
+  schedule:
+    - cron: '17 9 1 * *'   # day 1 of each month, 09:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Look for new versions
+        id: check
+        run: |
+          scripts/check-versions.sh | tee /tmp/changes.md
+          if git diff --quiet versions.env; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Install with the new versions
+        if: steps.check.outputs.changed == 'true'
+        run: ./install.sh --yes
+      - name: Checks
+        if: steps.check.outputs.changed == 'true'
+        run: scripts/ci-checks.sh
+      - name: Open PR
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          branch="versions/$(date +%Y-%m)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "chore: update tool versions ($(date +%Y-%m))"
+          git push -f origin "$branch"
+          if ! gh pr view "$branch" >/dev/null 2>&1; then
+            { echo "New versions, already installed and tested on a clean Ubuntu:"; echo; cat /tmp/changes.md; } > /tmp/body.md
+            gh pr create --head "$branch" --title "chore: update tool versions ($(date +%Y-%m))" --body-file /tmp/body.md
+          fi

@@ -44,17 +44,20 @@ versions.env            Versiones fijas de Neovim, fzf, lazygit, starship…
 scripts/
   backup-old.sh         Respalda las configs de una máquina en ~/mis-configs-old
   import-current.sh     Trae al repo lo que cambié directo en ~/.tmux o ~/.vim
+  check-versions.sh     Busca versiones nuevas de las herramientas de versions.env
+  ci-checks.sh          Pruebas después de instalar (las usa GitHub)
+  git-hooks/pre-commit  Bloquea commits con secretos (gitleaks)
 bin/
   mis-configs           Comando: doctor, update, import, backup, status, edit
   tmux-sessionizer      Comando `t`: elegir un proyecto de ~/dev y abrir su sesión de tmux
 tmux/                   Mi tmux: tmux.conf, yank.sh, toggle de atajos, config remota
 vim/                    Mi vim: vimrc y vpm/sources.vim (lista de plugins)
-nvim/                   Neovim con mis atajos de vim (opcional)
+nvim/                   Neovim con mis atajos de vim, tests, depurador y Claude Code (opcional)
 shell/init.bash         Atajos de bash, fzf, zoxide, prompt, activación automática de env/
 starship/               Prompt: daguilar@diegoaguilar:~/dev/x (rama) $
 git/gitconfig           Mejoras visuales de git (delta); no cambia pull ni merge
 docs/                   Esta documentación
-.github/workflows/      Prueba automática en cada push
+.github/workflows/      Prueba en cada push y PR mensual con versiones nuevas
 ```
 
 ## Comando `mis-configs`
@@ -68,4 +71,4 @@ docs/                   Esta documentación
 | `mis-configs backup` | Respalda las configs actuales de la máquina |
 | `mis-configs edit` | Abre el repo en Neovim |
 
-Nunca se tocan ni se suben `.ssh`, `.aws`, `.azure`, `.claude` ni tokens: el repo es público.
+Nunca se tocan ni se suben `.ssh`, `.aws`, `.azure`, `.claude` ni tokens: el repo es público. gitleaks lo revisa antes de cada commit y en GitHub.

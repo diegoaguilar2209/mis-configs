@@ -28,6 +28,13 @@ vim.pack.add({
   { src = gh('nvim-tree/nvim-tree.lua'), version = v('1') },        -- F3: folder tree (like NERDTree)
   { src = gh('stevearc/aerial.nvim'), version = v('4') },           -- F4: classes and functions (like Tagbar)
   gh('christoomey/vim-tmux-navigator'),                             -- Ctrl-h/j/k/l across vim and tmux
+  gh('tpope/vim-fugitive'),                                         -- :Git, same as in my vim
+  gh('rafamadriz/friendly-snippets'),                               -- snippet collection (like vim-snippets)
+  { src = gh('vim-test/vim-test'), version = v('3') },              -- \tt \tf \ts: run pytest from the editor
+  gh('mfussenegger/nvim-dap'),                                      -- debugger (master: nvim-dap-view needs it)
+  gh('mfussenegger/nvim-dap-python'),                               -- debugpy for Python
+  { src = gh('igorlfs/nvim-dap-view'), version = v('1') },          -- debugger panels
+  { src = gh('coder/claudecode.nvim'), version = v('0') },          -- Claude Code sees my file, selection and diffs
 }, { confirm = vim.env.DOTFILES_BOOTSTRAP == nil })
 
 vim.api.nvim_create_user_command('PackUpdate', function() vim.pack.update() end, { desc = 'Update plugins' })
@@ -163,6 +170,68 @@ vim.api.nvim_create_user_command('FormatToggle', function()
 end, { desc = 'Toggle format on save' })
 map('n', '<leader>cf', function() require('conform').format({ lsp_format = 'fallback' }) end, { desc = 'Format file' })
 
+-- Snippets: Tab expands like UltiSnips (def<Tab>), Ctrl-j / Ctrl-k jump between fields ------
+local snippets = require('mini.snippets')
+snippets.setup({
+  snippets = { snippets.gen_loader.from_lang() }, -- friendly-snippets + nvim/snippets/<lang>.json
+  mappings = { expand = '', jump_next = '<C-j>', jump_prev = '<C-k>' },
+  expand = {
+    match = function(snips) return snippets.default_match(snips, { pattern_fuzzy = '%S+' }) end,
+  },
+})
+map('i', '<Tab>', function()
+  if #MiniSnippets.expand({ insert = false }) > 0 then
+    vim.schedule(MiniSnippets.expand)
+    return ''
+  end
+  return '\t'
+end, { expr = true, desc = 'Expand snippet or insert tab' })
+
+-- Tests (vim-test): runs in a terminal split, with the project's env/ ----------
+vim.g['test#strategy'] = 'neovim_sticky'
+vim.g['test#neovim#term_position'] = 'botright 15'
+vim.g['test#python#runner'] = 'pytest'
+map('n', '<leader>tt', '<cmd>TestNearest<cr>', { desc = 'Test under cursor' })
+map('n', '<leader>tf', '<cmd>TestFile<cr>', { desc = 'Tests of this file' })
+map('n', '<leader>ts', '<cmd>TestSuite<cr>', { desc = 'All tests' })
+map('n', '<leader>tl', '<cmd>TestLast<cr>', { desc = 'Repeat last test' })
+map('n', '<leader>tv', '<cmd>TestVisit<cr>', { desc = 'Go to last test file' })
+
+-- Debugger: F5 start/continue, F9 breakpoint, F10 over, F6 into, F7 out, F8 panels --
+local dap = require('dap')
+local debugpy = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python'
+require('dap-python').setup(vim.fn.executable(debugpy) == 1 and debugpy or 'python3')
+require('dap-python').test_runner = 'pytest'
+-- Debug the program with the project's env/ (my convention), else the active virtualenv
+require('dap-python').resolve_python = function()
+  local env = vim.fn.getcwd() .. '/env/bin/python'
+  if vim.fn.executable(env) == 1 then return env end
+  if vim.env.VIRTUAL_ENV then return vim.env.VIRTUAL_ENV .. '/bin/python' end
+  return 'python3'
+end
+require('dap-view').setup({ auto_toggle = true })
+map('n', '<F5>', dap.continue, { desc = 'Debug: start / continue' })
+map('n', '<F9>', dap.toggle_breakpoint, { desc = 'Debug: breakpoint' })
+map('n', '<leader>B', function() dap.set_breakpoint(vim.fn.input('Condition: ')) end, { desc = 'Debug: conditional breakpoint' })
+map('n', '<F10>', dap.step_over, { desc = 'Debug: step over' })
+map('n', '<F6>', dap.step_into, { desc = 'Debug: step into' })
+map('n', '<F7>', dap.step_out, { desc = 'Debug: step out' })
+map('n', '<F8>', '<cmd>DapViewToggle<cr>', { desc = 'Debug: panels' })
+map('n', '<leader>td', function() require('dap-python').test_method() end, { desc = 'Debug test under cursor' })
+
+-- Claude Code: in Claude, /ide connects to this Neovim (also from another tmux pane) --
+require('claudecode').setup({ terminal = { provider = 'native', split_side = 'right', split_width_percentage = 0.4 } })
+map('n', '<leader>ac', '<cmd>ClaudeCode<cr>', { desc = 'Claude: open / close' })
+map('n', '<leader>af', '<cmd>ClaudeCodeFocus<cr>', { desc = 'Claude: focus' })
+map('n', '<leader>ab', '<cmd>ClaudeCodeAdd %<cr>', { desc = 'Claude: add this file' })
+map('v', '<leader>as', '<cmd>ClaudeCodeSend<cr>', { desc = 'Claude: send selection' })
+map('n', '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', { desc = 'Claude: accept change' })
+map('n', '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>', { desc = 'Claude: reject change' })
+
+-- Git (fugitive, like in my vim): :Git, :Git blame, :Gdiffsplit -----------------
+map('n', '<leader>gB', '<cmd>Git blame<cr>', { desc = 'Blame whole file' })
+map('n', '<leader>gd', '<cmd>Gdiffsplit<cr>', { desc = 'Diff against index' })
+
 -- Shortcut help --------------------------------------------------------------
 local wk = require('which-key')
 wk.setup({ preset = 'modern' })
@@ -171,5 +240,7 @@ wk.add({
   { '<leader>s', group = 'location list' },
   { '<leader>b', group = 'buffers' },
   { '<leader>c', group = 'code' },
+  { '<leader>t', group = 'tests' },
+  { '<leader>a', group = 'Claude Code' },
   { ',w', group = 'with word under cursor' },
 })
