@@ -77,9 +77,9 @@ if [[ $WITH_APT -eq 1 ]] && command -v apt-get >/dev/null; then
   SUDO=""; [[ $EUID -ne 0 ]] && SUDO="sudo"
   $SUDO apt-get update -qq
   $SUDO apt-get install -y -qq git curl unzip tar gzip xz-utils build-essential tmux \
-    ripgrep fd-find bat jq shellcheck python3 python3-venv python3-pip wslu >/dev/null 2>&1 \
+    ripgrep fd-find bat jq shellcheck python3 python3-venv python3-pip python3-dev cmake universal-ctags wslu >/dev/null 2>&1 \
     || $SUDO apt-get install -y -qq git curl unzip tar gzip xz-utils build-essential tmux \
-       ripgrep fd-find bat jq shellcheck python3 python3-venv python3-pip >/dev/null
+       ripgrep fd-find bat jq shellcheck python3 python3-venv python3-pip python3-dev cmake universal-ctags >/dev/null
   # Debian/Ubuntu ship fd and bat under other names
   command -v fdfind >/dev/null && ln -sf "$(command -v fdfind)" "$BIN/fd"
   command -v batcat >/dev/null && ln -sf "$(command -v batcat)" "$BIN/bat"

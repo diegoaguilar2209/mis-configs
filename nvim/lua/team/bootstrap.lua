@@ -2,6 +2,13 @@
 local M = {}
 
 function M.run()
+  -- Remove plugins that are on disk but no longer in plugins.lua
+  for _, p in ipairs(vim.pack.get()) do
+    if not p.active then
+      pcall(vim.pack.del, { p.spec.name })
+      print('removed unused plugin ' .. p.spec.name .. '\n')
+    end
+  end
   local wanted = _G.TeamParsers or {}
   if vim.fn.executable('tree-sitter') == 1 then
     pcall(function() require('nvim-treesitter').install(wanted):wait(600000) end)

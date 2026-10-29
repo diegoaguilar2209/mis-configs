@@ -26,7 +26,8 @@ vim.pack.add({
   { src = gh('lewis6991/gitsigns.nvim'), version = v('2') },        -- git changes in the gutter
   { src = gh('folke/which-key.nvim'), version = v('3') },           -- shows available shortcuts
   { src = gh('nvim-mini/mini.nvim'), version = v('0') },            -- statusline, icons, pairs, surround
-  { src = gh('stevearc/oil.nvim'), version = v('2') },              -- edit directories like a buffer
+  { src = gh('nvim-tree/nvim-tree.lua'), version = v('1') },        -- F3: folder tree (like NERDTree)
+  { src = gh('stevearc/aerial.nvim'), version = v('4') },           -- F4: classes and functions (like Tagbar)
   gh('christoomey/vim-tmux-navigator'),                             -- Ctrl-h/j/k/l across vim and tmux
 }, { confirm = vim.env.DOTFILES_BOOTSTRAP == nil })
 
@@ -81,12 +82,34 @@ map('n', ',wm', word(fzf.oldfiles), { desc = 'Recent files matching word' })
 map('n', ',wc', word(fzf.commands), { desc = 'Commands matching word' })
 map('n', ',pe', function() fzf.files({ query = vim.fn.expand('<cfile>') }) end, { desc = 'Files matching path under cursor' })
 map('n', ',r', fzf.live_grep, { desc = 'Search text in project (new)' })
-map('n', '<F4>', fzf.lsp_document_symbols, { desc = 'Symbols (Tagbar)' })
 
--- Files: F3 and ,t like NERDTree ---------------------------------------------
-require('oil').setup({ view_options = { show_hidden = true } })
-map('n', '<F3>', function() require('oil').toggle_float() end, { desc = 'File explorer (NERDTree)' })
-map('n', ',t', function() require('oil').open() end, { desc = 'Explorer at current file' })
+-- F3: folder tree like NERDTree (,t reveals the current file) ------------------
+require('mini.icons').mock_nvim_web_devicons() -- file icons for the tree
+require('nvim-tree').setup({
+  view = { width = 32 },
+  renderer = { group_empty = true },
+  filters = { dotfiles = false, custom = { '^\\.git$', '__pycache__', '\\.pyc$', '\\.pyo$', '\\.sw[a-z]$', '\\.DS_Store' } },
+  on_attach = function(buf)
+    local api = require('nvim-tree.api')
+    api.config.mappings.default_on_attach(buf)
+    local o = function(desc) return { buffer = buf, desc = desc, nowait = true } end
+    -- NERDTree keys: o open, s vertical split, i horizontal split, t new tab
+    map('n', 'o', api.node.open.edit, o('Open'))
+    map('n', 's', api.node.open.vertical, o('Open in vertical split'))
+    map('n', 'i', api.node.open.horizontal, o('Open in horizontal split'))
+    map('n', 't', api.node.open.tab, o('Open in new tab'))
+  end,
+})
+map('n', '<F3>', '<cmd>NvimTreeToggle<cr>', { desc = 'Folder tree (NERDTree)' })
+map('n', ',t', '<cmd>NvimTreeFindFile<cr>', { desc = 'Show current file in the tree' })
+
+-- F4: classes, methods and functions of the file, like Tagbar (focus moves to it) --
+require('aerial').setup({
+  backends = { 'lsp', 'treesitter', 'markdown' },
+  layout = { default_direction = 'right', min_width = 30 },
+  show_guides = true,
+})
+map('n', '<F4>', '<cmd>AerialToggle<cr>', { desc = 'Functions and classes (Tagbar)' })
 
 -- Git ------------------------------------------------------------------------
 require('gitsigns').setup({

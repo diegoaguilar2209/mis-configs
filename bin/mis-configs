@@ -2,6 +2,9 @@
 # mis-configs: helper for this setup.
 #   mis-configs update   pull the latest config and re-run the installer
 #   mis-configs doctor   show installed versions and common problems
+#   mis-configs import   copy changes made directly in ~/.tmux or ~/.vim into the repo
+#   mis-configs backup   save this machine's current configs to ~/mis-configs-old
+#   mis-configs status   what changed in the repo and is not pushed yet
 #   mis-configs edit     open the repo in Neovim
 set -euo pipefail
 DOTFILES="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
@@ -45,6 +48,12 @@ case "${1:-help}" in
     git -C "$DOTFILES" fetch -q 2>/dev/null && [[ -n "$(git -C "$DOTFILES" log 'HEAD..@{u}' --oneline 2>/dev/null)" ]] && echo "  Updates available: dotfiles update"
     echo "Neovim health: run :checkhealth inside nvim"
     ;;
+  import) "$DOTFILES/scripts/import-current.sh" && git -C "$DOTFILES" status --short ;;
+  backup) "$DOTFILES/scripts/backup-old.sh" ;;
+  status)
+    git -C "$DOTFILES" status --short
+    git -C "$DOTFILES" log --oneline '@{u}..HEAD' 2>/dev/null | sed 's/^/  not pushed: /'
+    ;;
   edit) cd "$DOTFILES" && exec nvim . ;;
-  *) sed -n '2,5p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//' ;;
 esac
