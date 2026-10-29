@@ -16,7 +16,7 @@
 	colorMoved = default
 	algorithm = histogram
 [merge]
-	conflictStyle = zdiff3
+	conflictStyle = diff3
 [core]
 	editor = nvim
 	pager = delta
