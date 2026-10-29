@@ -25,7 +25,7 @@ case "${1:-help}" in
     }
     echo "Tools"
     check nvim "$NVIM_VERSION" nvim --version
-    check tmux "3.4+" tmux -V
+    check tmux "3.2+" tmux -V
     check tree-sitter "$TREE_SITTER_VERSION" tree-sitter --version
     check fzf "$FZF_VERSION" fzf --version
     check rg "apt" rg --version

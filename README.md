@@ -13,7 +13,7 @@ mkdir -p ~/dev && git clone https://github.com/diegoaguilar2209/mis-configs.git 
 | Pieza | Elección | Por qué | Alternativas evaluadas |
 | --- | --- | --- | --- |
 | Editor | **Neovim 0.12** | Mismas teclas que Vim, pero con LSP, tree-sitter, gestor de plugins y autocompletado incluidos. 0.12 trae `vim.pack` con archivo de bloqueo: cada máquina usa las mismas versiones de plugins | Vim (se queda como respaldo en `vim/vimrc`), Helix (sin plugins y con otras teclas), VS Code (no vive en la terminal) |
-| Multiplexor | **tmux 3.4+** | Estable, scriptable, funciona por SSH y es el que integran Claude Code (`--tmux`) y otras herramientas de agentes | Zellij (más amigable, pero menos maduro y con más memoria); Herdr (nuevo, sabe qué agente espera aprobación: vale la pena seguirlo) |
+| Multiplexor | **tmux 3.2+** | Estable, scriptable, funciona por SSH y es el que integran Claude Code (`--tmux`) y otras herramientas de agentes | Zellij (más amigable, pero menos maduro y con más memoria); Herdr (nuevo, sabe qué agente espera aprobación: vale la pena seguirlo) |
 | Terminal en Windows | **Windows Terminal** | Viene con Windows 11, detecta WSL y soporta portapapeles OSC 52 | WezTerm (si quieres la misma config en Mac/Linux). Ghostty todavía no tiene versión oficial para Windows |
 | Prompt | **Starship** | Rápido, una sola config | — |
 | Utilidades | fzf, ripgrep, fd, bat, eza, zoxide, lazygit, delta | Buscar, navegar y revisar git mucho más rápido | — |
