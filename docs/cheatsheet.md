@@ -12,7 +12,7 @@
 | `ll`, `lt` | Listar con detalles y estado de git / árbol |
 | `lg` | lazygit |
 | `mkenv`, `lock` | Crear `env/` y fijar dependencias con pip-tools |
-| `mis-configs doctor` / `mis-configs update` | Revisar / actualizar este setup |
+| `mis-configs doctor` / `update` / `import` / `status` | Revisar / actualizar / guardar cambios hechos en ~/.tmux o ~/.vim / ver qué falta subir |
 
 ## tmux (prefijo Ctrl-a)
 
@@ -48,8 +48,8 @@
 | `,we` `,wg` `,wG` `,wf` `,wm` `,wc` | Lo mismo, con la palabra bajo el cursor |
 | `,pe` | Buscar el archivo cuya ruta está bajo el cursor |
 | `,r` | Buscar texto en todo el proyecto (nuevo) |
-| `F3` / `,t` | Explorador de archivos / en la carpeta del archivo actual |
-| `F4` | Símbolos (como Tagbar) |
+| `F3` / `,t` | Árbol de carpetas a la izquierda / mostrar ahí el archivo actual (dentro: `o` abrir, `s` `i` `t` splits y pestaña, `a` `r` `d` crear, renombrar y borrar, `g?` ayuda) |
+| `F4` | Clases y funciones a la derecha, como Tagbar (dentro: `Enter` ir, `{` `}` anterior y siguiente, `q` cerrar) |
 | `gd` `gD` `gt` `gi` | Definición, declaración, tipo, implementación |
 | `,d` `,o` `,a` `,D` | Definición, referencias, asignación, definición en pestaña nueva |
 | `K` / `grn` / `gra` | Documentación / renombrar / acciones de código |
