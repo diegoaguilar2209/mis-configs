@@ -247,6 +247,10 @@ fi
 # ---------------------------------------------------------------------------
 say "6/6 Neovim plugins, parsers and language servers"
 if command -v nvim >/dev/null; then
+  # A run cut short leaves plugin folders with only .git inside: remove them so they download again
+  for d in "$HOME"/.local/share/nvim/site/pack/core/opt/*/; do
+    [[ -d "$d" && -z "$(find "$d" -mindepth 1 -maxdepth 1 ! -name .git -print -quit)" ]] && { rm -rf "$d"; warn "Re-downloading incomplete plugin $(basename "$d")"; }
+  done
   # First run installs plugins (pinned in nvim-pack-lock.json), parsers and language servers.
   # Capped at 15 minutes so a network problem never hangs the installer.
   if ! DOTFILES_BOOTSTRAP=1 timeout "${DOTFILES_NVIM_TIMEOUT:-900}" nvim --headless "+lua require('team.bootstrap').run()" +qa 2>&1 | grep -v '^$' | tail -25; then
