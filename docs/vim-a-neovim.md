@@ -16,7 +16,7 @@
 
 ## Se ve como mi vim
 
-Mismo esquema `torte` y la paleta del terminal (fondo negro, amarillo, turquesa, magenta, gris), números de línea gris oscuro como en mi vimrc, y la barra de abajo y las pestañas de buffers de arriba con los colores de airline `dark`. Está en `nvim/lua/team/colors.lua`. Para probar otro esquema: `:colorscheme <nombre>` (Tab muestra los que hay).
+Mismo esquema `torte`, la paleta del terminal y los mismos archivos de sintaxis clásicos de vim (no tree-sitter ni los colores del servidor de lenguaje, que pintan cada variable), así que el código se ve igual: fondo negro, palabras clave amarillas, funciones turquesa, imports magenta, el resto gris. Números de línea gris oscuro como en mi vimrc, y la barra de abajo y las pestañas de buffers de arriba con los colores de airline `dark`. Está en `nvim/lua/team/colors.lua`. Para probar otro esquema: `:colorscheme <nombre>` (Tab muestra los que hay). Para ver los colores más detallados de tree-sitter: `vim.g.treesitter_colors = true` en `nvim/lua/user/init.lua`.
 
 En Python, F4 muestra lo mismo que Tagbar: imports, constantes (MAYÚSCULAS), variables del módulo, clases con sus métodos y atributos, y funciones; sin las variables internas de cada función. La lista se define en `nvim/queries/python/aerial.scm`.
 

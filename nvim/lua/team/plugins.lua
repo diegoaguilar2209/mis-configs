@@ -51,13 +51,21 @@ _G.TeamParsers = parsers
 if vim.fn.executable('tree-sitter') == 1 and vim.env.DOTFILES_BOOTSTRAP == nil then
   require('nvim-treesitter').install(parsers) -- no-op when already installed
 end
+-- Colors come from Vim's classic syntax files, exactly like my vim (tree-sitter highlighting
+-- paints every variable and call, which looks nothing like torte in vim). Tree-sitter is still
+-- used for F4 (aerial) and folds. To try tree-sitter colors: vim.g.treesitter_colors = true in lua/user.
 vim.api.nvim_create_autocmd('FileType', {
   callback = function(ev)
-    if pcall(vim.treesitter.start, ev.buf) then
-      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-      vim.wo[0][0].foldmethod = 'expr'
-      vim.wo[0][0].foldlevel = 99
+    local lang = vim.treesitter.language.get_lang(vim.bo[ev.buf].filetype)
+    if not (lang and pcall(vim.treesitter.get_parser, ev.buf, lang)) then return end
+    if vim.g.treesitter_colors then
+      vim.treesitter.start(ev.buf, lang)
+    elseif vim.treesitter.highlighter.active[ev.buf] then
+      vim.treesitter.stop(ev.buf) -- Neovim turns it on by default for some filetypes (markdown, lua)
     end
+    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+    vim.wo[0][0].foldmethod = 'expr'
+    vim.wo[0][0].foldlevel = 99
   end,
 })
 

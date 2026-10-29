@@ -6,6 +6,10 @@ local function apply()
   hl('LineNr', { fg = '#808080', ctermfg = 8 })
   hl('CursorLineNr', { fg = '#ffff00', ctermfg = 11, bold = true })
 
+  -- Neovim's python.vim is newer than Vim's: make class names and `self` look like in my vim
+  hl('pythonClass', { link = 'pythonFunction' })
+  hl('pythonClassVar', { link = 'Normal' })
+
   -- airline "dark": a = mode, b = git/info, c = file name
   local a_normal = { fg = '#00005f', bg = '#dfff00', ctermfg = 17, ctermbg = 190, bold = true }
   local a_insert = { fg = '#00005f', bg = '#00dfff', ctermfg = 17, ctermbg = 45, bold = true }

@@ -46,6 +46,8 @@ vim.diagnostic.config({
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    -- No extra colors from the language server, so the code looks like in my vim
+    if client and not vim.g.treesitter_colors then client.server_capabilities.semanticTokensProvider = nil end
     local o = function(desc) return { buffer = ev.buf, desc = desc } end
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, o('Go to definition'))
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, o('Go to declaration'))
