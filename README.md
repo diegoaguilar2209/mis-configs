@@ -1,11 +1,11 @@
 # mis-configs
 
-Mi terminal en un repo: **Neovim 0.12, tmux, herramientas modernas de terminal y mis configuraciones**, con versiones fijadas. En una laptop nueva, o para que un amigo tenga lo mismo que yo, basta con:
+Mi terminal en un repo: **mi tmux y mi vim tal como los uso**, más Neovim 0.12 con mis mismos atajos y herramientas modernas de terminal, con versiones fijadas. En una laptop nueva, o para que un amigo tenga lo mismo que yo, basta con:
 
 ```bash
 mkdir -p ~/dev && git clone https://github.com/diegoaguilar2209/mis-configs.git ~/dev/mis-configs
-~/dev/mis-configs/scripts/backup-old.sh   # guarda las configs actuales en ~/mis-configs-old
-~/dev/mis-configs/install.sh              # instala todo y enlaza las configs al home
+~/dev/mis-configs/scripts/backup-old.sh   # guarda las configs que ya tenga esa máquina en ~/mis-configs-old
+~/dev/mis-configs/install.sh              # instala todo y enlaza mis configs al home
 ```
 
 ## Por qué estas herramientas (octubre 2026)
@@ -48,7 +48,7 @@ Nunca se tocan ni se guardan en el repo `.ssh`, `.aws`, `.azure`, `.claude` ni n
 ### Volver atrás
 
 ```bash
-rm ~/.vimrc ~/.config/nvim ~/.config/tmux/tmux.conf   # quita los enlaces
+rm ~/.vimrc ~/.tmux.conf ~/.config/nvim   # quita los enlaces
 cp -a ~/mis-configs-old/.vimrc ~/mis-configs-old/.tmux.conf ~/   # restaura lo anterior
 ```
 y borra en `~/.bashrc` las dos líneas que siguen a `# mis-configs`.
@@ -60,42 +60,40 @@ y borra en `~/.bashrc` las dos líneas que siguen a `# mis-configs`.
 | Paquetes del sistema (git, tmux, ripgrep, fd, bat, jq, python3-venv, shellcheck) | apt | Pide `sudo` una vez; `--no-apt` lo omite |
 | Neovim, tree-sitter, fzf, zoxide, eza, starship, lazygit, delta, Node.js | `~/.local/bin`, `~/.local/opt` | Versiones en [`versions.env`](versions.env); sin `sudo` |
 | Config de Neovim | `~/.config/nvim` → `nvim/` | Enlace simbólico: cambios en el repo se ven al instante |
-| Config de tmux + plugins | `~/.config/tmux/tmux.conf` → `tmux/tmux.conf` | Plugins: resurrect y continuum (restauran sesiones) |
+| Mi tmux | `~/.tmux.conf` → `tmux/tmux.conf`, y `~/.tmux/<archivo>` → `tmux/<archivo>` (yank.sh, toggle, remote) | Los plugins de la lista `@plugin` se clonan en `~/.tmux/plugins` |
 | Prompt | `~/.config/starship.toml` | |
 | Shell | una línea en `~/.bashrc` que carga `shell/init.bash` | Lo personal va en `~/.bashrc.local` |
 | Git | `include.path` a `git/gitconfig` | Tu nombre y email siguen siendo tuyos |
-| Vim clásico | `~/.vimrc` → `vim/vimrc` | Sin plugins, para servidores |
+| Mi vim | `~/.vimrc` → `vim/vimrc`, y `~/.vim/vpm` → `vim/vpm` | vim-plug instala los plugins de `vpm/sources.vim` |
 
 ## Uso diario
 
-```bash
-t                      # elige un proyecto con fzf y abre (o retoma) su sesión de tmux
-cd ~/dev/x && v  # abre Neovim
-```
+### tmux (mi config de siempre, prefijo Ctrl-a)
 
-Dentro de tmux (prefijo **Ctrl-a**):
+Mis atajos y los de mis plugins siguen igual: `prefix p` pega, `prefix D` desconecta otros clientes, `prefix C-t` oculta la barra, copia en modo vi con `v`/`y`/`Y`/`D`/`A` por `~/.tmux/yank.sh`, paneles con tmux-pain-control (`prefix |`, `prefix -`, `prefix h/j/k/l`, `prefix H/J/K/L`), sesiones con tmux-sessionx (`prefix O`), tmux-fzf (`prefix F`), tema nord y sesiones que se restauran solas (resurrect + continuum).
 
-| Teclas | Acción |
-| --- | --- |
-| `Ctrl-a f` | Saltar a otro proyecto |
-| `Ctrl-a \|` / `Ctrl-a -` | Dividir vertical / horizontal |
-| `Ctrl-h/j/k/l` | Moverse entre paneles de tmux y ventanas de Neovim |
-| `Ctrl-a C` | Claude Code en un panel al lado, en la carpeta actual |
-| `Ctrl-a g` | lazygit en una ventana flotante |
-| `Ctrl-a [` | Modo copia (vim): `v` selecciona, `y` copia al portapapeles de Windows |
+Extra de este repo, desde la shell: `t` elige un proyecto de `~/dev` con fzf y abre o retoma su sesión.
 
-En Neovim (líder **Espacio**; presiónalo y espera para ver todos los atajos):
+### vim
 
-| Teclas | Acción |
-| --- | --- |
-| `Espacio Espacio` / `Espacio f g` | Buscar archivo / buscar texto en el proyecto |
-| `-` | Explorador de archivos (se edita como un buffer) |
-| `gd` / `K` / `grr` / `grn` | Ir a definición / documentación / referencias / renombrar |
-| `Espacio c f` | Formatear (también se formatea al guardar) |
-| `Espacio g g` | lazygit |
-| `]h` / `Espacio h p` | Siguiente cambio de git / ver el cambio |
+Mi `.vimrc` tal cual, con sus plugins por vim-plug (`vim/vpm/sources.vim`). YouCompleteMe necesita compilarse una vez en cada máquina: `cd ~/.vim/plugged/YouCompleteMe && python3 install.py`.
 
-Hoja completa: [docs/cheatsheet.md](docs/cheatsheet.md).
+### Neovim (opcional, con mis mismos atajos)
+
+`nvim` o `v` abren Neovim. `vim` sigue siendo vim. Los atajos son los de mi vimrc, pero por debajo usa herramientas actuales:
+
+| Atajo (igual que en vim) | En vim era | En Neovim hace |
+| --- | --- | --- |
+| `\l` / `\h` / `\d` / `\bl` | buffers | Igual |
+| `Ctrl-s` | guardar | Igual |
+| `,e` `,g` `,G` `,f` `,m` `,c` y `,w…` | CtrlP | fzf-lua: archivos, símbolos, líneas, recientes, comandos |
+| `F3` / `,t` | NERDTree | oil (explorador que se edita como texto; `:w` aplica) |
+| `F4` | Tagbar | Símbolos del archivo |
+| `gd` `gD` `gt` `gi` | YouCompleteMe | LSP: definición, declaración, tipo, implementación |
+| `,d` `,o` `,a` `,D` | Jedi | LSP: definición, referencias, asignación, definición en pestaña |
+| `\e`, `\sn` `\sp` `\se` `\sl` | Syntastic / loclist | Errores del LSP en la location list |
+
+Novedades que no tenía vim: `,r` busca texto en todo el proyecto, `\gg` abre lazygit, `]c`/`[c` saltan entre cambios de git, `\gp` muestra el cambio, `\cf` formatea (y Python se formatea con isort + black al guardar; `:FormatToggle` lo apaga). Presiona `\` o `,` y espera: aparece la lista de atajos.
 
 ### Python
 
@@ -107,9 +105,8 @@ Mi convención: entorno en `env/` y dependencias con pip-tools.
 
 ### Con Claude Code
 
-- `Ctrl-a C` abre Claude en un panel junto a tu editor.
-- `Shift+Enter` funciona dentro de tmux (extended keys activado).
 - Neovim recarga solo los archivos que Claude modifica.
+- Para abrir Claude al lado del editor: `prefix |` para dividir y `claude` en el panel nuevo.
 
 ## Ajustes solo para una máquina
 
@@ -122,7 +119,9 @@ Mi convención: entorno en `env/` y dependencias con pip-tools.
 - **Actualizar tu máquina:** `mis-configs update`, que hace `git pull` y vuelve a correr el instalador.
 - **Subir la versión de una herramienta:** cámbiala en `versions.env`, corre `./install.sh`, prueba y haz commit.
 - **Actualizar plugins de Neovim:** `:PackUpdate`, revisa los cambios, `:write` para aceptar y commit de `nvim/nvim-pack-lock.json`.
-- **Agregar un plugin:** súmalo en `nvim/lua/team/plugins.lua` con una línea que explique para qué sirve. Menos plugins es mejor.
+- **Cambié algo en tmux o vim directamente en `~/.tmux/` o `~/.vim/`:** `./scripts/import-current.sh`, revisa con `git diff` y haz commit.
+- **Agregar un plugin de tmux:** una línea `set -g @plugin '...'` en `tmux/tmux.conf` y vuelve a correr `./install.sh` (o `prefix I`).
+- **Agregar un plugin de Neovim:** súmalo en `nvim/lua/team/plugins.lua` con una línea que explique para qué sirve.
 - Cada push corre la CI, que prueba el instalador en un Ubuntu limpio.
 
 ## Problemas comunes
@@ -130,7 +129,7 @@ Mi convención: entorno en `env/` y dependencias con pip-tools.
 | Síntoma | Solución |
 | --- | --- |
 | Íconos se ven como cuadros | Falta la Nerd Font en Windows Terminal ([windows/README.md](windows/README.md)) |
-| Colores raros dentro de tmux | Cierra todas las sesiones (`tmux kill-server`) y vuelve a entrar |
+| tmux no toma un cambio | `tmux source ~/.tmux.conf`, o cierra todo con `tmux kill-server` |
 | Copiar en tmux no llega a Windows | Usa Windows Terminal (soporta OSC 52) y actualízalo; `set-clipboard` ya está activo |
 | Todo va lento | El proyecto está en `/mnt/c`; muévelo a `~/dev` |
 | No aparece un servidor de lenguaje | `:Mason` para ver el estado; `:checkhealth vim.lsp` |

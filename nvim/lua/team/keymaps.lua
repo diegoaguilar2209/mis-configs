@@ -1,23 +1,21 @@
--- Leader is <Space>. Press it and wait: which-key shows every shortcut below.
+-- Same keys as my vimrc. Leader is \ and local leader is , (press one and wait: which-key lists the rest).
 local map = vim.keymap.set
 
+-- My shortcuts (vimrc)
+map('n', '<leader>l', '<cmd>bnext<cr>', { desc = 'Next buffer' })
+map('n', '<leader>h', '<cmd>bprevious<cr>', { desc = 'Previous buffer' })
+map('n', '<leader>d', '<cmd>bp <bar> bd #<cr>', { desc = 'Close buffer, keep window' })
+map('n', '<leader>bl', '<cmd>ls<cr>', { desc = 'List buffers' })
+map('n', '<C-s>', '<cmd>update<cr>', { desc = 'Save if changed' })
+
+-- Location list (vimrc)
+map('n', '<leader>sn', '<cmd>lnext<cr>', { desc = 'Next location' })
+map('n', '<leader>sp', '<cmd>lprev<cr>', { desc = 'Previous location' })
+map('n', '<leader>se', '<cmd>lopen<cr>', { desc = 'Open location list' })
+map('n', '<leader>sl', '<cmd>llist<cr>', { desc = 'List locations' })
+
+-- \e showed Syntastic errors: now the LSP diagnostics of this file in the location list
+map('n', '<leader>e', function() vim.diagnostic.setloclist() end, { desc = 'Errors of this file' })
+
 map('n', '<Esc>', '<cmd>nohlsearch<cr>', { desc = 'Clear search highlight' })
-map('n', '<leader>w', '<cmd>write<cr>', { desc = 'Save file' })
-map('n', '<leader>q', '<cmd>quit<cr>', { desc = 'Close window' })
-
--- Move selected lines up and down
-map('v', 'J', ":m '>+1<cr>gv=gv", { desc = 'Move selection down' })
-map('v', 'K', ":m '<-2<cr>gv=gv", { desc = 'Move selection up' })
-
--- Keep the cursor centered when jumping
-map('n', '<C-d>', '<C-d>zz')
-map('n', '<C-u>', '<C-u>zz')
-map('n', 'n', 'nzzzv')
-map('n', 'N', 'Nzzzv')
-
--- Diagnostics
-map('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Show diagnostic' })
-map('n', '<leader>xq', vim.diagnostic.setqflist, { desc = 'Diagnostics to quickfix' })
-
--- Terminal: leave insert mode with Esc Esc
 map('t', '<Esc><Esc>', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })

@@ -9,7 +9,7 @@
 | `Ctrl-r` | Buscar en el historial (fzf) |
 | `Ctrl-t` | Insertar ruta de archivo (fzf) |
 | `Alt-c` | Entrar a una subcarpeta (fzf) |
-| `ll`, `tree` | Listar con detalles y estado de git |
+| `ll`, `lt` | Listar con detalles y estado de git / árbol |
 | `lg` | lazygit |
 | `mkenv`, `lock` | Crear `env/` y fijar dependencias con pip-tools |
 | `mis-configs doctor` / `mis-configs update` | Revisar / actualizar este setup |
@@ -18,46 +18,46 @@
 
 | Teclas | Qué hace |
 | --- | --- |
-| `f` | Saltar a otro proyecto |
+| `p` | Pegar (mi atajo) |
+| `d` / `D` | Desconectarme / desconectar a los demás clientes |
+| `C-t` | Ocultar o mostrar la barra |
+| `\|` `-` / `\\` `_` | Dividir vertical u horizontal: solo el panel o a lo ancho (pain-control) |
+| `h/j/k/l` | Moverse entre paneles (pain-control) |
+| `H/J/K/L` | Redimensionar panel (pain-control) |
+| `O` | Buscar y cambiar de sesión (tmux-sessionx) |
+| `F` | Menú fzf de tmux (tmux-fzf) |
 | `c` / `1..9` / `,` | Ventana nueva / ir a ventana / renombrar |
-| `\|` / `-` | Dividir vertical / horizontal |
-| `Ctrl-h/j/k/l` (sin prefijo) | Moverse entre paneles y Neovim |
-| `H/J/K/L` | Redimensionar panel |
 | `z` | Zoom del panel |
-| `x` | Cerrar panel |
-| `d` | Salir de tmux (la sesión sigue viva) |
-| `s` | Lista de sesiones |
-| `[` | Modo copia: `v` seleccionar, `y` copiar |
-| `C` | Claude Code en un panel lateral |
-| `g` | lazygit flotante |
-| `r` | Recargar configuración |
+| `[` | Modo copia: `v` selecciona, `y` o `Enter` copia, `Y` la línea, `D` hasta el final, `A` añade |
 | `Ctrl-s` / `Ctrl-r` | Guardar / restaurar sesiones (también es automático) |
-| `I` / `U` | Instalar / actualizar plugins de tmux |
+| `I` / `U` | Instalar / actualizar plugins |
 | `?` | Ver todas las teclas |
 
-## Neovim (líder Espacio)
+## Neovim (líder `\`, líder local `,`)
 
 | Teclas | Qué hace |
 | --- | --- |
-| `Espacio` (y esperar) | Mostrar todos los atajos |
-| `Espacio Espacio`, `Espacio f f` | Buscar archivo |
-| `Espacio f g` | Buscar texto en el proyecto |
-| `Espacio f w` | Buscar la palabra bajo el cursor |
-| `Espacio f b` / `f r` | Buffers abiertos / archivos recientes |
-| `Espacio /` | Buscar en este archivo |
-| `-` | Explorador de archivos (oil): edita, renombra y borra como texto, `:w` aplica |
-| `gd` / `K` | Ir a definición / documentación |
-| `grr` / `gri` / `grn` / `gra` | Referencias / implementación / renombrar / acciones de código |
-| `Espacio d` | Ver el error de la línea |
-| `]d` / `[d` | Siguiente / anterior error |
-| `Espacio c f` | Formatear archivo |
-| `:FormatToggle` | Activar / desactivar formateo al guardar |
-| `]h` / `[h` | Siguiente / anterior cambio de git |
-| `Espacio h p` / `h s` / `h r` / `h b` | Ver / preparar / deshacer cambio / blame |
-| `Espacio g g` | lazygit |
-| `gc` (visual) / `gcc` | Comentar selección / línea |
-| `sa`, `sd`, `sr` | Agregar / borrar / reemplazar comillas o paréntesis (mini.surround) |
-| `Espacio w` / `Espacio q` | Guardar / cerrar ventana |
-| `:Mason` | Servidores de lenguaje y formateadores |
-| `:PackUpdate` | Actualizar plugins (luego commit del lock) |
-| `:checkhealth` | Diagnóstico general |
+| `\l` / `\h` | Buffer siguiente / anterior |
+| `\d` | Cerrar buffer sin cerrar la ventana |
+| `\bl` | Listar buffers |
+| `Ctrl-s` | Guardar |
+| `,e` | Buscar archivo |
+| `,g` / `,G` | Símbolos del archivo / del proyecto |
+| `,f` | Buscar en líneas de los buffers abiertos |
+| `,m` / `,c` | Archivos recientes / comandos |
+| `,we` `,wg` `,wG` `,wf` `,wm` `,wc` | Lo mismo, con la palabra bajo el cursor |
+| `,pe` | Buscar el archivo cuya ruta está bajo el cursor |
+| `,r` | Buscar texto en todo el proyecto (nuevo) |
+| `F3` / `,t` | Explorador de archivos / en la carpeta del archivo actual |
+| `F4` | Símbolos (como Tagbar) |
+| `gd` `gD` `gt` `gi` | Definición, declaración, tipo, implementación |
+| `,d` `,o` `,a` `,D` | Definición, referencias, asignación, definición en pestaña nueva |
+| `K` / `grn` / `gra` | Documentación / renombrar / acciones de código |
+| `\e` | Errores del archivo en la location list |
+| `\sn` `\sp` `\se` `\sl` | Siguiente, anterior, abrir y listar la location list |
+| `]c` / `[c` | Siguiente / anterior cambio de git |
+| `\gp` `\gs` `\gr` `\gb` | Ver, preparar, deshacer cambio / blame |
+| `\gg` | lazygit |
+| `\cf` / `:FormatToggle` | Formatear / activar o desactivar el formateo al guardar |
+| `gcc` / `gc` (visual) | Comentar línea / selección |
+| `:Mason`, `:PackUpdate`, `:checkhealth` | Servidores, actualizar plugins, diagnóstico |

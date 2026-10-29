@@ -1,32 +1,23 @@
-# Shared git settings, included from ~/.gitconfig by install.sh.
-# Your name and email stay in your own ~/.gitconfig.
+# Git extras, included from ~/.gitconfig by install.sh. Only display and convenience settings:
+# nothing here changes how pull, merge or commit behave. Name and email stay in ~/.gitconfig.
 [init]
 	defaultBranch = main
-[pull]
-	rebase = true
-[push]
-	autoSetupRemote = true
 [fetch]
 	prune = true
-[rebase]
-	autoStash = true
-[rerere]
-	enabled = true
+[push]
+	autoSetupRemote = true
 [diff]
 	colorMoved = default
 	algorithm = histogram
 [merge]
 	conflictStyle = diff3
 [core]
-	editor = nvim
 	pager = delta
-	autocrlf = input
 [interactive]
 	diffFilter = delta --color-only
 [delta]
 	navigate = true
 	line-numbers = true
-	side-by-side = false
 [alias]
 	st = status -sb
 	lg = log --oneline --graph --decorate -20

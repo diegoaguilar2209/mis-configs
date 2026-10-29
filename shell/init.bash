@@ -4,9 +4,9 @@
 export DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH" ;; esac
 
-export EDITOR=nvim
-export VISUAL=nvim
-export MANPAGER='nvim +Man!'
+# vim stays the default editor; switch to nvim in ~/.bashrc.local when ready
+export EDITOR="${EDITOR:-vim}"
+export VISUAL="${VISUAL:-$EDITOR}"
 export BAT_THEME=ansi
 
 # History: big, shared between tmux panes, no duplicates
@@ -27,15 +27,14 @@ command -v zoxide >/dev/null && eval "$(zoxide init bash)"       # z <part of di
 command -v starship >/dev/null && eval "$(starship init bash)"   # prompt
 
 # --- Aliases ----------------------------------------------------------------
-alias v='nvim'
-alias vim='nvim'
+alias v='nvim'   # vim is still vim
 alias lg='lazygit'
 alias t='tmux-sessionizer'
 alias ta='tmux attach || tmux new -s main'
+# ls is untouched; ll and lt use eza when available
 if command -v eza >/dev/null; then
-  alias ls='eza --group-directories-first'
   alias ll='eza -lah --group-directories-first --git'
-  alias tree='eza --tree --level=2 --git-ignore'
+  alias lt='eza --tree --level=2 --git-ignore'
 else
   alias ll='ls -lah'
 fi

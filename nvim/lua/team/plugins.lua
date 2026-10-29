@@ -38,6 +38,7 @@ vim.cmd.colorscheme('tokyonight')
 
 require('mini.icons').setup()
 require('mini.statusline').setup()
+require('mini.tabline').setup() -- buffers as tabs, like airline's tabline
 require('mini.pairs').setup()
 require('mini.surround').setup()
 require('mini.ai').setup()
@@ -61,36 +62,43 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- Finder ---------------------------------------------------------------------
+-- Finder: same keys I used with CtrlP (local leader is ,) -----------------------
 local fzf = require('fzf-lua')
 fzf.setup({ 'default-title', winopts = { preview = { layout = 'vertical' } } })
 local map = vim.keymap.set
-map('n', '<leader>ff', fzf.files, { desc = 'Find files' })
-map('n', '<leader>fg', fzf.live_grep, { desc = 'Search text in project' })
-map('n', '<leader>fw', fzf.grep_cword, { desc = 'Search word under cursor' })
-map('n', '<leader>fb', fzf.buffers, { desc = 'Open buffers' })
-map('n', '<leader>fr', fzf.oldfiles, { desc = 'Recent files' })
-map('n', '<leader>fh', fzf.helptags, { desc = 'Help' })
-map('n', '<leader>fk', fzf.keymaps, { desc = 'Keymaps' })
-map('n', '<leader>fd', fzf.diagnostics_document, { desc = 'Diagnostics' })
-map('n', '<leader>/', fzf.blines, { desc = 'Search in this file' })
-map('n', '<leader><leader>', fzf.files, { desc = 'Find files' })
+local word = function(picker) return function() picker({ query = vim.fn.expand('<cword>') }) end end
+map('n', ',e', fzf.files, { desc = 'Find files (CtrlP)' })
+map('n', ',g', fzf.lsp_document_symbols, { desc = 'Symbols in this file' })
+map('n', ',G', fzf.lsp_live_workspace_symbols, { desc = 'Symbols in project' })
+map('n', ',f', fzf.lines, { desc = 'Lines in open buffers' })
+map('n', ',m', fzf.oldfiles, { desc = 'Recent files' })
+map('n', ',c', fzf.commands, { desc = 'Commands' })
+map('n', ',we', word(fzf.files), { desc = 'Files matching word' })
+map('n', ',wg', word(fzf.lsp_document_symbols), { desc = 'Symbols matching word' })
+map('n', ',wG', word(fzf.lsp_live_workspace_symbols), { desc = 'Project symbols matching word' })
+map('n', ',wf', word(fzf.lines), { desc = 'Lines matching word' })
+map('n', ',wm', word(fzf.oldfiles), { desc = 'Recent files matching word' })
+map('n', ',wc', word(fzf.commands), { desc = 'Commands matching word' })
+map('n', ',pe', function() fzf.files({ query = vim.fn.expand('<cfile>') }) end, { desc = 'Files matching path under cursor' })
+map('n', ',r', fzf.live_grep, { desc = 'Search text in project (new)' })
+map('n', '<F4>', fzf.lsp_document_symbols, { desc = 'Symbols (Tagbar)' })
 
--- Files ----------------------------------------------------------------------
+-- Files: F3 and ,t like NERDTree ---------------------------------------------
 require('oil').setup({ view_options = { show_hidden = true } })
-map('n', '-', '<cmd>Oil<cr>', { desc = 'Open parent directory' })
+map('n', '<F3>', function() require('oil').toggle_float() end, { desc = 'File explorer (NERDTree)' })
+map('n', ',t', function() require('oil').open() end, { desc = 'Explorer at current file' })
 
 -- Git ------------------------------------------------------------------------
 require('gitsigns').setup({
   on_attach = function(buf)
     local gs = require('gitsigns')
     local o = function(desc) return { buffer = buf, desc = desc } end
-    map('n', ']h', function() gs.nav_hunk('next') end, o('Next change'))
-    map('n', '[h', function() gs.nav_hunk('prev') end, o('Previous change'))
-    map('n', '<leader>hs', gs.stage_hunk, o('Stage change'))
-    map('n', '<leader>hr', gs.reset_hunk, o('Undo change'))
-    map('n', '<leader>hp', gs.preview_hunk, o('Preview change'))
-    map('n', '<leader>hb', gs.blame_line, o('Blame line'))
+    map('n', ']c', function() if vim.wo.diff then vim.cmd('normal! ]c') else gs.nav_hunk('next') end end, o('Next git change'))
+    map('n', '[c', function() if vim.wo.diff then vim.cmd('normal! [c') else gs.nav_hunk('prev') end end, o('Previous git change'))
+    map('n', '<leader>gs', gs.stage_hunk, o('Stage change'))
+    map('n', '<leader>gr', gs.reset_hunk, o('Undo change'))
+    map('n', '<leader>gp', gs.preview_hunk, o('Preview change'))
+    map('n', '<leader>gb', gs.blame_line, o('Blame line'))
   end,
 })
 map('n', '<leader>gg', function()
@@ -124,9 +132,9 @@ map('n', '<leader>cf', function() require('conform').format({ lsp_format = 'fall
 local wk = require('which-key')
 wk.setup({ preset = 'modern' })
 wk.add({
-  { '<leader>f', group = 'find' },
-  { '<leader>h', group = 'git changes' },
   { '<leader>g', group = 'git' },
+  { '<leader>s', group = 'location list' },
+  { '<leader>b', group = 'buffers' },
   { '<leader>c', group = 'code' },
-  { '<leader>x', group = 'lists' },
+  { ',w', group = 'with word under cursor' },
 })

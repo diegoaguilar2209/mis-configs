@@ -39,7 +39,8 @@ case "${1:-help}" in
     check claude "optional" claude --version
     echo "Checks"
     [[ "$(readlink -f "$HOME/.config/nvim")" == "$DOTFILES/nvim" ]] && echo "  nvim config linked" || echo "  nvim config NOT linked (run install.sh)"
-    [[ "$(readlink -f "$HOME/.config/tmux/tmux.conf")" == "$DOTFILES/tmux/tmux.conf" ]] && echo "  tmux config linked" || echo "  tmux config NOT linked (run install.sh)"
+    [[ "$(readlink -f "$HOME/.tmux.conf")" == "$DOTFILES/tmux/tmux.conf" ]] && echo "  tmux config linked" || echo "  tmux config NOT linked (run install.sh)"
+    [[ "$(readlink -f "$HOME/.vimrc")" == "$DOTFILES/vim/vimrc" ]] && echo "  vim config linked" || echo "  vim config NOT linked (run install.sh)"
     [[ "$DOTFILES" == /mnt/* ]] && echo "  WARNING: repo is on the Windows disk; move it into WSL (~/dev/mis-configs)"
     git -C "$DOTFILES" fetch -q 2>/dev/null && [[ -n "$(git -C "$DOTFILES" log 'HEAD..@{u}' --oneline 2>/dev/null)" ]] && echo "  Updates available: dotfiles update"
     echo "Neovim health: run :checkhealth inside nvim"

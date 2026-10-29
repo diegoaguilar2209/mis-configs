@@ -1,31 +1,43 @@
-# Fast, minimal prompt: directory, git, Python env, duration of slow commands.
+# One-line prompt like Ubuntu's default (daguilar@diegoaguilar:~/dev$), plus git branch and Python env.
 add_newline = false
 command_timeout = 500
-format = "$directory$git_branch$git_status$python$cmd_duration$line_break$character"
+format = "$username$hostname$directory$git_branch$git_status$python$cmd_duration$character"
+
+[username]
+show_always = true
+format = "[$user]($style)@"
+style_user = "bold green"
+
+[hostname]
+ssh_only = false
+format = "[$hostname]($style):"
+style = "bold green"
 
 [directory]
-truncation_length = 3
+truncation_length = 0
+truncate_to_repo = false
+format = "[$path]($style)[$read_only]($read_only_style)"
 style = "bold blue"
 
 [git_branch]
-format = "[$branch]($style) "
+format = " [($branch)]($style)"
 style = "purple"
 
 [git_status]
-format = "([$all_status$ahead_behind]($style) )"
+format = "[$all_status$ahead_behind]($style)"
 style = "yellow"
 
 [python]
-format = "[${symbol}${virtualenv}]($style) "
+format = " [${symbol}${virtualenv}]($style)"
 symbol = "py "
 style = "green"
 
 [cmd_duration]
 min_time = 3000
-format = "[$duration]($style) "
+format = " [$duration]($style)"
 style = "dimmed white"
 
 [character]
-success_symbol = "[❯](green)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
+success_symbol = "[\\$](bold white)"
+error_symbol = "[\\$](bold red)"
+vimcmd_symbol = "[\\$](bold green)"

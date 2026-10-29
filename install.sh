@@ -172,13 +172,26 @@ link() { # source target
   say "Linked $dst"
 }
 link "$DOTFILES/nvim" "$HOME/.config/nvim"
-link "$DOTFILES/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
-# tmux reads ~/.tmux.conf before ~/.config/tmux/tmux.conf: move an old one out of the way
-if [[ -f "$HOME/.tmux.conf" && ! -L "$HOME/.tmux.conf" ]]; then
-  mkdir -p "$BACKUP" && mv "$HOME/.tmux.conf" "$BACKUP/" && say "Backed up old ~/.tmux.conf to $BACKUP/"
-fi
 link "$DOTFILES/starship/starship.toml" "$HOME/.config/starship.toml"
+
+# tmux: ~/.tmux.conf plus the helper files it sources from ~/.tmux/ (yank.sh, *.conf)
+link "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
+for f in "$DOTFILES"/tmux/*; do
+  name=$(basename "$f")
+  [[ "$name" == tmux.conf || "$name" == README.md ]] && continue
+  link "$f" "$HOME/.tmux/$name"
+done
+# Earlier versions of this repo linked ~/.config/tmux/tmux.conf: remove that link
+if [[ -L "$HOME/.config/tmux/tmux.conf" && "$(readlink "$HOME/.config/tmux/tmux.conf")" == "$DOTFILES"* ]]; then
+  rm "$HOME/.config/tmux/tmux.conf"
+fi
+
+# vim: ~/.vimrc plus the folders it uses inside ~/.vim/ (vpm/ with the plugin list, colors...)
 link "$DOTFILES/vim/vimrc" "$HOME/.vimrc"
+for d in "$DOTFILES"/vim/*; do
+  [[ "$(basename "$d")" == vimrc ]] && continue
+  link "$d" "$HOME/.vim/$(basename "$d")"
+done
 link "$DOTFILES/bin/mis-configs" "$BIN/mis-configs"
 link "$DOTFILES/bin/tmux-sessionizer" "$BIN/tmux-sessionizer"
 
@@ -200,15 +213,35 @@ if [[ -z "$(git config --global user.name || true)" && $ASSUME_YES -eq 0 ]]; the
 fi
 
 # ---------------------------------------------------------------------------
-say "5/6 tmux plugins"
-TPM="$HOME/.config/tmux/plugins/tpm"
-if [[ ! -d "$TPM" ]]; then
-  git -c advice.detachedHead=false clone -q --depth 1 --branch "$TPM_VERSION" https://github.com/tmux-plugins/tpm "$TPM" || warn "Could not clone tpm"
-fi
-if [[ -x "$TPM/bin/install_plugins" ]]; then
-  tmux start-server \; source-file "$HOME/.config/tmux/tmux.conf" 2>/dev/null || true
-  "$TPM/bin/install_plugins" >/dev/null 2>&1 || warn "tmux plugins: run prefix + I inside tmux"
-  tmux kill-server 2>/dev/null || true
+say "5/6 tmux and vim plugins"
+# tmux: clone every `set -g @plugin 'owner/repo'` from tmux.conf into ~/.tmux/plugins (no tmux server needed,
+# so running sessions are never touched)
+plugdir="$HOME/.tmux/plugins"
+mkdir -p "$plugdir"
+grep -oE "^[[:space:]]*set(-option)? -g @plugin ['\"][^'\"]+" "$DOTFILES/tmux/tmux.conf" | sed -E "s/.*['\"]//" |
+while read -r plug; do
+  name=${plug##*/}
+  if [[ ! -d "$plugdir/$name" ]]; then
+    if git -c advice.detachedHead=false clone -q --depth 1 "https://github.com/$plug" "$plugdir/$name"; then
+      say "tmux plugin $plug"
+    else
+      warn "Could not clone tmux plugin $plug"
+    fi
+  fi
+done
+# vim: vim-plug, then install the plugins listed in the vimrc (and vpm/sources.vim)
+if command -v vim >/dev/null && grep -q "plug#begin" "$DOTFILES/vim/vimrc"; then
+  if [[ ! -f "$HOME/.vim/autoload/plug.vim" ]]; then
+    mkdir -p "$HOME/.vim/autoload"
+    download https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim "$HOME/.vim/autoload/plug.vim" || true
+  fi
+  if [[ -f "$HOME/.vim/autoload/plug.vim" ]]; then
+    if timeout 600 vim -N -E -s -u "$HOME/.vimrc" +PlugInstall +qall </dev/null >/dev/null 2>&1; then
+      say "vim plugins installed"
+    else
+      warn "vim plugins: open vim and run :PlugInstall"
+    fi
+  fi
 fi
 
 # ---------------------------------------------------------------------------

@@ -1,17 +1,19 @@
 local o = vim.opt
 
 o.number = true
-o.relativenumber = true
 o.signcolumn = 'yes'
 o.cursorline = true
 o.scrolloff = 8
 o.wrap = false
-o.colorcolumn = '88' -- black's line length
+o.colorcolumn = '80'
 
 o.expandtab = true
-o.shiftwidth = 4
-o.tabstop = 4
-o.smartindent = true
+o.shiftwidth = 2 -- like my vimrc; Python files use 4 (Neovim's PEP 8 default)
+o.tabstop = 2
+o.softtabstop = 2
+o.autoindent = true
+o.fileformat = 'unix'
+o.path:append('**')
 
 o.ignorecase = true
 o.smartcase = true
@@ -38,3 +40,7 @@ o.pumborder = 'rounded'
 
 -- System clipboard: inside tmux Neovim uses tmux, which forwards to Windows via OSC 52
 o.clipboard = 'unnamedplus'
+
+-- Not copied from my vimrc on purpose:
+--   autochdir: it breaks project-wide search (fzf, grep). Enable it in lua/user/init.lua if I miss it.
+vim.filetype.add({ extension = { pck = 'sql' } })
