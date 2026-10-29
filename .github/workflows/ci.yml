@@ -7,7 +7,7 @@ jobs:
   install:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Lint shell scripts
         run: sudo apt-get install -y -qq shellcheck && shellcheck install.sh bin/* shell/init.bash scripts/*.sh
       - name: Install on a clean machine
