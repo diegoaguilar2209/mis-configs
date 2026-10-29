@@ -173,6 +173,10 @@ link() { # source target
 }
 link "$DOTFILES/nvim" "$HOME/.config/nvim"
 link "$DOTFILES/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+# tmux reads ~/.tmux.conf before ~/.config/tmux/tmux.conf: move an old one out of the way
+if [[ -f "$HOME/.tmux.conf" && ! -L "$HOME/.tmux.conf" ]]; then
+  mkdir -p "$BACKUP" && mv "$HOME/.tmux.conf" "$BACKUP/" && say "Backed up old ~/.tmux.conf to $BACKUP/"
+fi
 link "$DOTFILES/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$DOTFILES/vim/vimrc" "$HOME/.vimrc"
 link "$DOTFILES/bin/dotfiles" "$BIN/dotfiles"
