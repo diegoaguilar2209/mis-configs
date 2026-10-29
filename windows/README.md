@@ -19,33 +19,16 @@ Si winget no la encuentra, descárgala de [nerdfonts.com](https://www.nerdfonts.
 
 ## 3. Windows Terminal
 
-Abre Configuración → "Abrir archivo JSON" y agrega lo siguiente:
-
-- En `profiles.defaults`:
+Abre Configuración → "Abrir archivo JSON" y, en `profiles.defaults`, agrega la fuente:
 
 ```json
 "font": { "face": "JetBrainsMono Nerd Font", "size": 11 },
-"colorScheme": "Tokyo Night",
-"padding": "8",
-"intenseTextStyle": "bright"
+"padding": "8"
 ```
 
-- En la lista `schemes`:
+Deja el esquema de colores por defecto (Campbell): vim y Neovim usan la paleta del terminal con `torte`, así que con Campbell se ven como siempre (fondo negro, amarillo, turquesa, magenta).
 
-```json
-{
-  "name": "Tokyo Night",
-  "background": "#1A1B26", "foreground": "#C0CAF5",
-  "cursorColor": "#C0CAF5", "selectionBackground": "#33467C",
-  "black": "#15161E", "red": "#F7768E", "green": "#9ECE6A", "yellow": "#E0AF68",
-  "blue": "#7AA2F7", "purple": "#BB9AF7", "cyan": "#7DCFFF", "white": "#A9B1D6",
-  "brightBlack": "#414868", "brightRed": "#F7768E", "brightGreen": "#9ECE6A",
-  "brightYellow": "#E0AF68", "brightBlue": "#7AA2F7", "brightPurple": "#BB9AF7",
-  "brightCyan": "#7DCFFF", "brightWhite": "#C0CAF5"
-}
-```
-
-- Pon Ubuntu como perfil por defecto (`defaultProfile`) y, en su perfil, `"startingDirectory": "~"`, para abrir siempre en tu home de Linux.
+Pon Ubuntu como perfil por defecto (`defaultProfile`) y, en su perfil, `"startingDirectory": "~"` para abrir siempre en el home de Linux.
 
 ## 4. Memoria de WSL (opcional)
 

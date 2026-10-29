@@ -53,11 +53,6 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
-    "tokyonight.nvim": {
-      "rev": "545d72cde6400835d895160ecb5853874fd5156d",
-      "src": "https://github.com/folke/tokyonight.nvim",
-      "version": "4.0.0 - 5.0.0"
-    },
     "vim-tmux-navigator": {
       "rev": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432",
       "src": "https://github.com/christoomey/vim-tmux-navigator"

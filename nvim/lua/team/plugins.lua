@@ -15,7 +15,6 @@ vim.api.nvim_create_autocmd('PackChanged', {
 })
 
 vim.pack.add({
-  { src = gh('folke/tokyonight.nvim'), version = v('4') },          -- color scheme
   { src = gh('nvim-treesitter/nvim-treesitter'), version = 'main' }, -- syntax parsers
   { src = gh('neovim/nvim-lspconfig'), version = v('2') },          -- language server definitions
   { src = gh('mason-org/mason.nvim'), version = v('2') },           -- installs servers and formatters
@@ -34,8 +33,7 @@ vim.pack.add({
 vim.api.nvim_create_user_command('PackUpdate', function() vim.pack.update() end, { desc = 'Update plugins' })
 
 -- Appearance -----------------------------------------------------------------
-require('tokyonight').setup({ style = 'night' })
-vim.cmd.colorscheme('tokyonight')
+require('team.colors') -- torte + airline colors, like my vim
 
 require('mini.icons').setup()
 require('mini.statusline').setup()
@@ -105,7 +103,13 @@ map('n', ',t', '<cmd>NvimTreeFindFile<cr>', { desc = 'Show current file in the t
 
 -- F4: classes, methods and functions of the file, like Tagbar (focus moves to it) --
 require('aerial').setup({
-  backends = { 'lsp', 'treesitter', 'markdown' },
+  -- Python uses the Tagbar-like outline in queries/python/aerial.scm (imports, constants,
+  -- variables, classes, methods, attributes); other languages ask the language server first.
+  backends = { ['_'] = { 'lsp', 'treesitter', 'markdown' }, python = { 'treesitter', 'lsp' } },
+  filter_kind = {
+    ['_'] = { 'Class', 'Constructor', 'Enum', 'Function', 'Interface', 'Module', 'Method', 'Struct' },
+    python = false, -- show every kind the query returns
+  },
   layout = { default_direction = 'right', min_width = 30 },
   show_guides = true,
 })

@@ -49,7 +49,7 @@
 | `,pe` | Buscar el archivo cuya ruta está bajo el cursor |
 | `,r` | Buscar texto en todo el proyecto (nuevo) |
 | `F3` / `,t` | Árbol de carpetas a la izquierda / mostrar ahí el archivo actual (dentro: `o` abrir, `s` `i` `t` splits y pestaña, `a` `r` `d` crear, renombrar y borrar, `g?` ayuda) |
-| `F4` | Clases y funciones a la derecha, como Tagbar (dentro: `Enter` ir, `{` `}` anterior y siguiente, `q` cerrar) |
+| `F4` | Imports, variables, clases y funciones a la derecha, como Tagbar (dentro: `Enter` ir, `{` `}` anterior y siguiente, `q` cerrar) |
 | `gd` `gD` `gt` `gi` | Definición, declaración, tipo, implementación |
 | `,d` `,o` `,a` `,D` | Definición, referencias, asignación, definición en pestaña nueva |
 | `K` / `grn` / `gra` | Documentación / renombrar / acciones de código |

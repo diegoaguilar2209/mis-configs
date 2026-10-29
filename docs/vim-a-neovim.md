@@ -9,10 +9,16 @@
 | Autocompletado e ir a definición | YouCompleteMe: hay que compilarlo en cada laptop (cmake, Java) | Servidores de lenguaje incluidos, se instalan solos |
 | Errores en Python | Syntastic (desactivado en mi lista) | Errores y tipos mientras escribo (basedpyright) |
 | F3 carpetas | NERDTree | nvim-tree: misma barra lateral y teclas parecidas |
-| F4 funciones | Tagbar (necesita ctags) | aerial: misma barra con clases y funciones, usando el servidor de lenguaje |
+| F4 funciones | Tagbar (necesita ctags) | aerial: misma barra con imports, constantes, variables, clases, métodos y funciones |
 | Buscar | CtrlP | fzf-lua: mismos atajos (`,e` `,g` `,m`…), más rápido, y búsqueda de texto en todo el proyecto |
 | Formatear | A mano | isort + black al guardar (`:FormatToggle` lo apaga) |
 | Versiones de plugins | Las que bajen ese día | Fijas en `nvim-pack-lock.json`: iguales en todas las laptops |
+
+## Se ve como mi vim
+
+Mismo esquema `torte` y la paleta del terminal (fondo negro, amarillo, turquesa, magenta, gris), números de línea gris oscuro como en mi vimrc, y la barra de abajo y las pestañas de buffers de arriba con los colores de airline `dark`. Está en `nvim/lua/team/colors.lua`. Para probar otro esquema: `:colorscheme <nombre>` (Tab muestra los que hay).
+
+En Python, F4 muestra lo mismo que Tagbar: imports, constantes (MAYÚSCULAS), variables del módulo, clases con sus métodos y atributos, y funciones; sin las variables internas de cada función. La lista se define en `nvim/queries/python/aerial.scm`.
 
 ## Mis atajos en los dos
 
@@ -20,7 +26,7 @@
 | --- | --- | --- |
 | `F3` | NERDTree | Árbol de carpetas (nvim-tree) |
 | `,t` | Mostrar el archivo actual en NERDTree | Mostrar el archivo actual en el árbol |
-| `F4` | Tagbar (con foco) | Clases y funciones (aerial, con foco) |
+| `F4` | Tagbar (con foco) | Imports, variables, clases y funciones (aerial, con foco) |
 | `,e` / `,m` / `,c` | CtrlP archivos / recientes / comandos | fzf-lua, lo mismo |
 | `,g` / `,G` / `,f` | Símbolos del archivo / de todos / líneas | Igual |
 | `,we` `,wg` `,wG` `,wf` `,wm` `,wc` `,pe` | Lo mismo con la palabra bajo el cursor | Igual |

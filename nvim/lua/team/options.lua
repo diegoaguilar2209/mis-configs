@@ -2,7 +2,6 @@ local o = vim.opt
 
 o.number = true
 o.signcolumn = 'yes'
-o.cursorline = true
 o.scrolloff = 8
 o.wrap = false
 o.colorcolumn = '80'
@@ -21,7 +20,7 @@ o.inccommand = 'split'
 
 o.splitright = true
 o.splitbelow = true
-o.termguicolors = true
+o.termguicolors = false -- use the terminal's palette, exactly like my vim (t_Co=256, torte)
 o.winborder = 'rounded'
 o.mouse = 'a'
 o.updatetime = 250
