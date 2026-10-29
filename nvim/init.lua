@@ -3,7 +3,7 @@
 -- Personal tweaks go in lua/user/init.lua (git-ignored), never in these files.
 
 if vim.fn.has('nvim-0.12') == 0 then
-  vim.notify('This config needs Neovim 0.12 or later. Run ~/dotfiles/install.sh', vim.log.levels.ERROR)
+  vim.notify('This config needs Neovim 0.12 or later. Run ~/dev/mis-configs/install.sh', vim.log.levels.ERROR)
   return
 end
 

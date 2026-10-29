@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# dotfiles: small helper for the team setup.
-#   dotfiles update   pull the latest team config and re-run the installer
-#   dotfiles doctor   show installed versions and common problems
-#   dotfiles edit     open the repo in Neovim
+# mis-configs: helper for this setup.
+#   mis-configs update   pull the latest config and re-run the installer
+#   mis-configs doctor   show installed versions and common problems
+#   mis-configs edit     open the repo in Neovim
 set -euo pipefail
 DOTFILES="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
 
@@ -18,9 +18,9 @@ case "${1:-help}" in
       local name=$1 want=$2 got; shift 2
       if command -v "$name" >/dev/null; then
         got=$("$@" 2>/dev/null | grep -oE 'v?[0-9]+\.[0-9]+(\.[0-9]+)?' | head -1)
-        printf '  %-12s %-10s (team: %s)\n' "$name" "$got" "$want"
+        printf '  %-12s %-10s (repo: %s)\n' "$name" "$got" "$want"
       else
-        printf '  %-12s MISSING (team: %s)\n' "$name" "$want"
+        printf '  %-12s MISSING (repo: %s)\n' "$name" "$want"
       fi
     }
     echo "Tools"
@@ -40,7 +40,7 @@ case "${1:-help}" in
     echo "Checks"
     [[ "$(readlink -f "$HOME/.config/nvim")" == "$DOTFILES/nvim" ]] && echo "  nvim config linked" || echo "  nvim config NOT linked (run install.sh)"
     [[ "$(readlink -f "$HOME/.config/tmux/tmux.conf")" == "$DOTFILES/tmux/tmux.conf" ]] && echo "  tmux config linked" || echo "  tmux config NOT linked (run install.sh)"
-    [[ "$DOTFILES" == /mnt/* ]] && echo "  WARNING: repo is on the Windows disk; move it into WSL (~/dotfiles)"
+    [[ "$DOTFILES" == /mnt/* ]] && echo "  WARNING: repo is on the Windows disk; move it into WSL (~/dev/mis-configs)"
     git -C "$DOTFILES" fetch -q 2>/dev/null && [[ -n "$(git -C "$DOTFILES" log 'HEAD..@{u}' --oneline 2>/dev/null)" ]] && echo "  Updates available: dotfiles update"
     echo "Neovim health: run :checkhealth inside nvim"
     ;;

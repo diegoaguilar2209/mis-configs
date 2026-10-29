@@ -12,7 +12,7 @@
 | `ll`, `tree` | Listar con detalles y estado de git |
 | `lg` | lazygit |
 | `mkenv`, `lock` | Crear `env/` y fijar dependencias con pip-tools |
-| `dotfiles doctor` / `dotfiles update` | Revisar / actualizar este setup |
+| `mis-configs doctor` / `mis-configs update` | Revisar / actualizar este setup |
 
 ## tmux (prefijo Ctrl-a)
 

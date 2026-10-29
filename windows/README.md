@@ -63,5 +63,5 @@ Reinicia con `wsl --shutdown`.
 
 ## Reglas de oro
 
-- Proyectos siempre en `~/proyectos` (dentro de Linux), nunca en `/mnt/c`: es mucho más rápido y evita problemas de permisos y fin de línea.
+- Proyectos siempre en `~/dev` (dentro de Linux), nunca en `/mnt/c`: es mucho más rápido y evita problemas de permisos y fin de línea.
 - Para abrir la carpeta actual en el Explorador de Windows: `explorer.exe .`

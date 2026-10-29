@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Pick a project with fzf and switch to its tmux session (created if missing).
-# Project roots: $PROJECTS_DIRS (space-separated), default ~/proyectos ~/projects ~/work ~/dotfiles
+# Project roots: $PROJECTS_DIRS (space-separated), default ~/dev ~/proyectos ~/projects
 set -euo pipefail
 
-roots=${PROJECTS_DIRS:-"$HOME/proyectos $HOME/projects $HOME/work $HOME/dotfiles"}
+roots=${PROJECTS_DIRS:-"$HOME/dev $HOME/proyectos $HOME/projects"}
 
 if [[ $# -eq 1 ]]; then
   selected=$1

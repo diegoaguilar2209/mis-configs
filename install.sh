@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Team terminal setup for WSL2 / Ubuntu / Debian: Neovim, tmux, modern CLI tools and shared configs.
+# Terminal setup for WSL2 / Ubuntu / Debian: Neovim, tmux, modern CLI tools and my configs.
 # Safe to re-run: it updates what changed and backs up any file it replaces.
 #
 # Usage: ./install.sh [--yes] [--no-node] [--no-apt] [--help]
@@ -25,7 +25,7 @@ done
 
 BIN="$HOME/.local/bin"
 OPT="$HOME/.local/opt"
-BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+BACKUP="$HOME/.mis-configs-backup/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BIN" "$OPT" "$HOME/.config"
 export PATH="$BIN:$PATH"
 
@@ -40,7 +40,7 @@ esac
 IS_WSL=0; grep -qi microsoft /proc/version 2>/dev/null && IS_WSL=1
 
 if [[ $IS_WSL -eq 1 && "$DOTFILES" == /mnt/* ]]; then
-  warn "This repo is on the Windows disk ($DOTFILES). Clone it inside WSL (e.g. ~/dotfiles): it is much faster."
+  warn "This repo is on the Windows disk ($DOTFILES). Clone it inside WSL (e.g. ~/dev/mis-configs): it is much faster."
 fi
 
 download() { # url dest
@@ -179,11 +179,11 @@ if [[ -f "$HOME/.tmux.conf" && ! -L "$HOME/.tmux.conf" ]]; then
 fi
 link "$DOTFILES/starship/starship.toml" "$HOME/.config/starship.toml"
 link "$DOTFILES/vim/vimrc" "$HOME/.vimrc"
-link "$DOTFILES/bin/dotfiles" "$BIN/dotfiles"
+link "$DOTFILES/bin/mis-configs" "$BIN/mis-configs"
 link "$DOTFILES/bin/tmux-sessionizer" "$BIN/tmux-sessionizer"
 
 # Shell: one line in ~/.bashrc, everything else lives in this repo
-marker="# team-dotfiles"
+marker="# mis-configs"
 if ! grep -q "$marker" "$HOME/.bashrc" 2>/dev/null; then
   printf '\n%s\n[ -f "%s/shell/init.bash" ] && source "%s/shell/init.bash"\n' "$marker" "$DOTFILES" "$DOTFILES" >> "$HOME/.bashrc"
   say "Added shell init to ~/.bashrc"

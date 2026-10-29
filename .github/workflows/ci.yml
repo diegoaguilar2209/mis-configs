@@ -28,4 +28,4 @@ jobs:
       - name: Vim fallback loads
         run: vim -u vim/vimrc -es -c q
       - name: Doctor
-        run: PATH="$HOME/.local/bin:$PATH" dotfiles doctor
+        run: PATH="$HOME/.local/bin:$PATH" mis-configs doctor

@@ -1,4 +1,4 @@
-# Team shell setup. Sourced from ~/.bashrc by install.sh. Personal additions: ~/.bashrc.local
+# Shell setup. Sourced from ~/.bashrc by install.sh. Machine-specific additions: ~/.bashrc.local
 # shellcheck shell=bash
 
 export DOTFILES="${DOTFILES:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
@@ -42,7 +42,7 @@ fi
 alias gs='git status -sb'
 alias gl='git log --oneline --graph --decorate -20'
 
-# --- Python: env/ + pip-tools (team convention) ------------------------------
+# --- Python: env/ + pip-tools (my convention) - ------------------------------
 # mkenv: create env/ with pip-tools and install from requirements*.txt if present
 mkenv() {
   python3 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools

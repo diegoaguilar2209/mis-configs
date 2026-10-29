@@ -1,37 +1,57 @@
-# dotfiles: terminal del equipo
+# mis-configs
 
-Un solo comando deja a todo el equipo con el mismo entorno en WSL2/Ubuntu: **Neovim 0.12, tmux, herramientas de terminal modernas y configuración compartida**, con versiones fijadas para que a todos les funcione igual.
+Mi terminal en un repo: **Neovim 0.12, tmux, herramientas modernas de terminal y mis configuraciones**, con versiones fijadas. En una laptop nueva, o para que un amigo tenga lo mismo que yo, basta con:
 
 ```bash
-git clone <url-de-este-repo> ~/dotfiles && ~/dotfiles/install.sh
+mkdir -p ~/dev && git clone https://github.com/diegoaguilar2209/mis-configs.git ~/dev/mis-configs
+~/dev/mis-configs/scripts/backup-old.sh   # guarda las configs actuales en ~/mis-configs-old
+~/dev/mis-configs/install.sh              # instala todo y enlaza las configs al home
 ```
 
 ## Por qué estas herramientas (octubre 2026)
 
 | Pieza | Elección | Por qué | Alternativas evaluadas |
 | --- | --- | --- | --- |
-| Editor | **Neovim 0.12** | Mismas teclas que Vim, pero con LSP, tree-sitter, gestor de plugins y autocompletado incluidos. 0.12 trae `vim.pack` con archivo de bloqueo: todo el equipo usa las mismas versiones de plugins | Vim (se queda como respaldo en `vim/vimrc`), Helix (sin plugins y con otras teclas), VS Code (no vive en la terminal) |
+| Editor | **Neovim 0.12** | Mismas teclas que Vim, pero con LSP, tree-sitter, gestor de plugins y autocompletado incluidos. 0.12 trae `vim.pack` con archivo de bloqueo: cada máquina usa las mismas versiones de plugins | Vim (se queda como respaldo en `vim/vimrc`), Helix (sin plugins y con otras teclas), VS Code (no vive en la terminal) |
 | Multiplexor | **tmux 3.4+** | Estable, scriptable, funciona por SSH y es el que integran Claude Code (`--tmux`) y otras herramientas de agentes | Zellij (más amigable, pero menos maduro y con más memoria); Herdr (nuevo, sabe qué agente espera aprobación: vale la pena seguirlo) |
 | Terminal en Windows | **Windows Terminal** | Viene con Windows 11, detecta WSL y soporta portapapeles OSC 52 | WezTerm (si quieres la misma config en Mac/Linux). Ghostty todavía no tiene versión oficial para Windows |
-| Prompt | **Starship** | Rápido, una sola config para todos | — |
+| Prompt | **Starship** | Rápido, una sola config | — |
 | Utilidades | fzf, ripgrep, fd, bat, eza, zoxide, lazygit, delta | Buscar, navegar y revisar git mucho más rápido | — |
 
-## Instalación
+## Instalación paso a paso
 
-1. **En Windows** (una vez): sigue [windows/README.md](windows/README.md) para instalar la fuente y configurar Windows Terminal.
-2. **En WSL** (Ubuntu 22.04 o 24.04), dentro de tu home de Linux y nunca en `/mnt/c`:
+1. **En Windows** (una vez por máquina): sigue [windows/README.md](windows/README.md) para instalar la fuente y configurar Windows Terminal.
+2. **En WSL**, siempre dentro del home de Linux y nunca en `/mnt/c`:
 
 ```bash
-git clone <url-de-este-repo> ~/dotfiles
-cd ~/dotfiles
-./install.sh            # pregunta antes de reemplazar tus archivos (siempre deja respaldo)
-./install.sh --yes      # sin preguntas
-./install.sh --no-node  # sin Node.js (solo lo usan los servidores de bash, yaml y json)
+mkdir -p ~/dev && cd ~/dev
+git clone https://github.com/diegoaguilar2209/mis-configs.git
+cd mis-configs
+./scripts/backup-old.sh   # copia .vimrc, .vim, .tmux.conf, .tmux, .bashrc, .gitconfig... a ~/mis-configs-old
+./install.sh              # pregunta antes de reemplazar cada archivo
 ```
 
-3. Abre una terminal nueva y corre `dotfiles doctor` para comprobar que todo quedó bien.
+Opciones del instalador:
 
-El instalador se puede correr las veces que quieras: solo actualiza lo que cambió. Lo que reemplaza queda en `~/.dotfiles-backup/<fecha>/`.
+| Comando | Qué hace |
+| --- | --- |
+| `./install.sh --yes` | Sin preguntas (igual deja respaldo) |
+| `./install.sh --no-node` | Sin Node.js (solo lo usan los servidores de bash, yaml y json) |
+| `./install.sh --no-apt` | Sin `sudo`: solo herramientas y configs de usuario |
+
+3. Abre una terminal nueva y corre `mis-configs doctor`: todo debe salir con versión y nada como `MISSING`.
+
+El instalador se puede correr las veces que quieras: solo actualiza lo que cambió. No copia archivos al home: crea **enlaces** a este repo, así que editar algo aquí lo cambia al instante, y un `git pull` actualiza la máquina. Lo que reemplaza queda en `~/.mis-configs-backup/<fecha>/`.
+
+Nunca se tocan ni se guardan en el repo `.ssh`, `.aws`, `.azure`, `.claude` ni ningún token.
+
+### Volver atrás
+
+```bash
+rm ~/.vimrc ~/.config/nvim ~/.config/tmux/tmux.conf   # quita los enlaces
+cp -a ~/mis-configs-old/.vimrc ~/mis-configs-old/.tmux.conf ~/   # restaura lo anterior
+```
+y borra en `~/.bashrc` las dos líneas que siguen a `# mis-configs`.
 
 ## Qué instala y dónde
 
@@ -50,7 +70,7 @@ El instalador se puede correr las veces que quieras: solo actualiza lo que cambi
 
 ```bash
 t                      # elige un proyecto con fzf y abre (o retoma) su sesión de tmux
-cd ~/proyectos/x && v  # abre Neovim
+cd ~/dev/x && v  # abre Neovim
 ```
 
 Dentro de tmux (prefijo **Ctrl-a**):
@@ -79,7 +99,7 @@ Hoja completa: [docs/cheatsheet.md](docs/cheatsheet.md).
 
 ### Python
 
-La convención del equipo: entorno en `env/` y dependencias con pip-tools.
+Mi convención: entorno en `env/` y dependencias con pip-tools.
 
 - `mkenv` crea `env/`, instala pip-tools y sincroniza `requirements*.txt`.
 - `lock` compila `requirements*.in` y sincroniza.
@@ -91,7 +111,7 @@ La convención del equipo: entorno en `env/` y dependencias con pip-tools.
 - `Shift+Enter` funciona dentro de tmux (extended keys activado).
 - Neovim recarga solo los archivos que Claude modifica.
 
-## Personalizar sin romper lo del equipo
+## Ajustes solo para una máquina
 
 - Neovim: crea `nvim/lua/user/init.lua` (está en `.gitignore`); se carga al final.
 - Shell: `~/.bashrc.local`.
@@ -99,11 +119,11 @@ La convención del equipo: entorno en `env/` y dependencias con pip-tools.
 
 ## Mantener el repo
 
-- **Actualizar tu máquina:** `dotfiles update`, que hace `git pull` y vuelve a correr el instalador.
+- **Actualizar tu máquina:** `mis-configs update`, que hace `git pull` y vuelve a correr el instalador.
 - **Subir la versión de una herramienta:** cámbiala en `versions.env`, corre `./install.sh`, prueba y haz commit.
 - **Actualizar plugins de Neovim:** `:PackUpdate`, revisa los cambios, `:write` para aceptar y commit de `nvim/nvim-pack-lock.json`.
 - **Agregar un plugin:** súmalo en `nvim/lua/team/plugins.lua` con una línea que explique para qué sirve. Menos plugins es mejor.
-- Todo cambio entra por pull request; la CI prueba el instalador en Ubuntu limpio.
+- Cada push corre la CI, que prueba el instalador en un Ubuntu limpio.
 
 ## Problemas comunes
 
@@ -112,7 +132,7 @@ La convención del equipo: entorno en `env/` y dependencias con pip-tools.
 | Íconos se ven como cuadros | Falta la Nerd Font en Windows Terminal ([windows/README.md](windows/README.md)) |
 | Colores raros dentro de tmux | Cierra todas las sesiones (`tmux kill-server`) y vuelve a entrar |
 | Copiar en tmux no llega a Windows | Usa Windows Terminal (soporta OSC 52) y actualízalo; `set-clipboard` ya está activo |
-| Todo va lento | El proyecto está en `/mnt/c`; muévelo a `~/proyectos` |
+| Todo va lento | El proyecto está en `/mnt/c`; muévelo a `~/dev` |
 | No aparece un servidor de lenguaje | `:Mason` para ver el estado; `:checkhealth vim.lsp` |
 | Faltan resaltados de sintaxis | `:TSUpdate`; necesita `tree-sitter` y un compilador de C (`build-essential`) |
 
