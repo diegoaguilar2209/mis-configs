@@ -144,6 +144,10 @@ if [[ "$(installed_version uv)" != "$UV_VERSION" || ! -x "$BIN/uv" ]]; then
   fi
   rm -rf "$tmp"
 fi
+# pre-commit as a global tool (my repos require it); uv keeps it isolated from each project's env/
+if command -v uv >/dev/null && ! command -v pre-commit >/dev/null; then
+  if uv tool install pre-commit >/dev/null; then say "pre-commit"; else warn "Could not install pre-commit with uv"; fi
+fi
 gl_arch=$([[ $ARCH == x86_64 ]] && echo x64 || echo arm64)
 install_tar_bin gitleaks "$GITLEAKS_VERSION" \
   "https://github.com/gitleaks/gitleaks/releases/download/v$GITLEAKS_VERSION/gitleaks_${GITLEAKS_VERSION}_linux_$gl_arch.tar.gz"
