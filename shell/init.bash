@@ -59,19 +59,26 @@ mkenv() {
   fi
   echo "env/ ready ($(python --version))"
 }
-# lock: compile each requirements*.in into its .txt and sync env/ to exactly those versions
+# lock: compile each requirements*.in into its .txt (for Python 3.12) and sync env/ to exactly those versions
 lock() {
-  local f
+  local f pyver
+  # Without uv, pip-compile runs with the env's Python, so env/ must exist first
+  if ! command -v uv >/dev/null && [[ ! -d env ]]; then mkenv || return 1; fi
   for f in requirements*.in; do
     [[ -e "$f" ]] || continue
     if command -v uv >/dev/null; then
-      uv pip compile --quiet "$f" -o "${f%.in}.txt"
+      uv pip compile --quiet --python-version 3.12 "$f" -o "${f%.in}.txt"
     else
-      pip-compile -q "$f"
+      env/bin/python -m piptools compile -q "$f"
     fi
   done
-  # No env/ yet: create it (mkenv also syncs). Otherwise sync the existing one.
+  # No env/ yet: create it (mkenv also syncs). Otherwise sync the existing one, if it is Python 3.12.
   if [[ ! -d env ]]; then mkenv; return; fi
+  pyver=$(env/bin/python -c 'import sys; print("%d.%d" % sys.version_info[:2])')
+  if [[ "$pyver" != 3.12 ]]; then
+    echo "env/ uses Python $pyver; recreate it with: rm -rf env && mkenv" >&2
+    return 1
+  fi
   if command -v uv >/dev/null; then
     uv pip sync --quiet --python env/bin/python requirements*.txt
   else
