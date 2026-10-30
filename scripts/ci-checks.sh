@@ -11,9 +11,10 @@ nvim --headless +'lua vim.defer_fn(function()
 end, 3000)'
 
 echo "== tmux loads my config (prefix Ctrl-a)"
-tmux new-session -d -s ci
-test "$(tmux show-options -gv prefix)" = "C-a"
-tmux kill-server
+# Own socket (-L ci): kill-server only stops this test server, never the user's tmux sessions
+tmux -L ci new-session -d -s ci
+test "$(tmux -L ci show-options -gv prefix)" = "C-a"
+tmux -L ci kill-server
 
 echo "== vim loads my vimrc without errors"
 vim -N -E -s -u "$HOME/.vimrc" -c 'qa!' </dev/null
