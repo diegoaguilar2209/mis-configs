@@ -10,7 +10,7 @@ Una terminal lista para programar en minutos: **Neovim, tmux y herramientas mode
 | **IA** | Claude Code integrado en el editor: ve el archivo y lo que seleccionas, y te muestra sus cambios como diff para aceptarlos o rechazarlos. |
 | **Terminal** | tmux con sesiones que se guardan solas, paneles con atajos simples y copiar al portapapeles (también el de Windows). `t` abre cualquier proyecto en su propia sesión. |
 | **Shell** | Historial con búsqueda (fzf), saltar a carpetas con `z`, prompt con la rama de git, lazygit, delta para diffs más legibles. |
-| **Python** | `mkenv` crea el entorno virtual e instala dependencias con uv (mucho más rápido que pip). El entorno se activa solo al entrar a la carpeta. |
+| **Python** | `mkenv` crea el entorno virtual con Python 3.12 e instala dependencias con uv (mucho más rápido que pip). El entorno se activa solo al entrar a la carpeta. |
 | **Seguridad** | Cada commit se revisa con gitleaks: si trae una llave o un token, se bloquea. |
 
 Las versiones están fijas (`versions.env` y `nvim/nvim-pack-lock.json`), así que todos tienen las mismas. Una vez al mes, GitHub busca versiones nuevas, las prueba en un Ubuntu limpio y abre un PR.

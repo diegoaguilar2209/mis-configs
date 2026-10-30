@@ -11,7 +11,7 @@
 | `Alt-c` | Entrar a una subcarpeta (fzf) |
 | `ll`, `lt` | Listar con detalles y estado de git / árbol |
 | `lg` | lazygit |
-| `mkenv`, `lock` | Crear `env/` y fijar dependencias (uv, o pip-tools si no hay uv) |
+| `mkenv`, `lock` | Crear `env/` (Python 3.12) y fijar dependencias (uv, o pip-tools si no hay uv) |
 | `mis-configs doctor` / `update` / `import` / `status` | Revisar / actualizar / guardar cambios hechos en ~/.tmux o ~/.vim / ver qué falta subir |
 
 ## tmux (prefijo Ctrl-a)

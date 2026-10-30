@@ -49,8 +49,8 @@ Mi `.vimrc` tal cual: NERDTree en `F3`, Tagbar en `F4`, CtrlP en `,e`, YouComple
 
 | Comando | Qué hace |
 | --- | --- |
-| `mkenv` | Crea `env/` e instala `requirements*.txt` si existen |
-| `lock` | Compila cada `requirements*.in` a su `.txt` con versiones fijas y deja `env/` exactamente así (si no hay `env/`, lo crea) |
+| `mkenv` | Crea `env/` con Python 3.12 e instala `requirements*.txt` si existen |
+| `lock` | Compila cada `requirements*.in` a su `.txt` (para Python 3.12) con versiones fijas y deja `env/` exactamente así (si no hay `env/`, lo crea; si `env/` usa otro Python, avisa y no sincroniza) |
 | (automático) | Al entrar a una carpeta con `env/`, se activa; al salir, se desactiva |
 
 Usan **uv** (10 a 100 veces más rápido que pip); si una máquina no lo tiene, usan pip-tools. Los archivos son los mismos de siempre (`requirements.in` → `requirements.txt`), así que el resto del equipo puede seguir con pip.

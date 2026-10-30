@@ -25,4 +25,6 @@ Primero: `mis-configs doctor`. Muestra versiones, enlaces y si hay algo pendient
 | `\tf` dice `No module named pytest` | El `env/` del proyecto no tiene pytest | `pip install pytest` (o agregarlo a `requirements-dev.in` y `lock`) |
 | F5 no para en el punto de parada | Falta debugpy | `:MasonInstall debugpy`, o `pip install debugpy` en `env/` |
 | `\ac` no abre Claude | `claude` no está en el PATH | `claude --version` en la terminal; instalarlo según la guía de Claude Code |
+| `mkenv` dice que no encuentra Python 3.12 | No está uv ni `python3.12` | `./install.sh` instala uv (que descarga 3.12), o instalar `python3.12` |
+| `lock` dice que `env/` usa otro Python | `env/` se creó con otra versión | `rm -rf env && mkenv` |
 | `mkenv` / `lock` lentos | No está uv | `./install.sh` lo instala; `uv --version` para revisar |

@@ -32,7 +32,7 @@ Si esa máquina tiene cambios que quiero conservar en el repo, después de insta
 | --- | --- | --- |
 | 1. Sistema | git, tmux, ripgrep, fd, bat, jq, shellcheck, python3-venv/-dev, cmake, universal-ctags | apt |
 | 2. Editor | Neovim y tree-sitter en las versiones de `versions.env` | `~/.local/opt`, `~/.local/bin` |
-| 3. Herramientas | fzf, zoxide, eza, starship, lazygit, delta, uv, gitleaks, Node.js | `~/.local/bin` |
+| 3. Herramientas | fzf, zoxide, eza, starship, lazygit, delta, uv, pre-commit (con `uv tool`), gitleaks, Node.js | `~/.local/bin` |
 | 4. Enlaces | tmux, vim, Neovim, prompt, comandos; una línea en `~/.bashrc`; un `include` en `~/.gitconfig` | home |
 | 5. Plugins tmux y vim | Clona cada `@plugin` de `tmux.conf` en `~/.tmux/plugins` y corre vim-plug (que también compila YouCompleteMe) | home |
 | 6. Neovim | Plugins (versiones de `nvim-pack-lock.json`), 20 lenguajes de resaltado, servidores de lenguaje, formateadores y el depurador de Python | `~/.local/share/nvim` |
