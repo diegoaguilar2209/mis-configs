@@ -42,15 +42,19 @@ alias gs='git status -sb'
 alias gl='git log --oneline --graph --decorate -20'
 
 # --- Python: env/ + pip-tools (my convention) - ------------------------------
-# mkenv: create env/ and install requirements*.txt. Uses uv (much faster) when available, else pip-tools.
+# mkenv: create env/ (Python 3.12) and install requirements*.txt. Uses uv (much faster) when available, else pip-tools.
 # The files stay pip-tools compatible: requirements.in -> requirements.txt, same as always.
 mkenv() {
   local reqs=(requirements*.txt)
   if command -v uv >/dev/null; then
-    uv venv --seed --quiet env && source env/bin/activate || return 1
+    uv venv --python 3.12 --seed --quiet env && source env/bin/activate || return 1
     [[ -e "${reqs[0]}" ]] && uv pip sync --quiet "${reqs[@]}"
   else
-    python3 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools || return 1
+    if ! command -v python3.12 >/dev/null; then
+      echo "Python 3.12 not found: install python3.12 or run ./install.sh to get uv" >&2
+      return 1
+    fi
+    python3.12 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools || return 1
     [[ -e "${reqs[0]}" ]] && pip-sync "${reqs[@]}"
   fi
   echo "env/ ready ($(python --version))"
