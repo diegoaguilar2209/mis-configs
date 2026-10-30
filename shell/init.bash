@@ -42,32 +42,43 @@ alias gs='git status -sb'
 alias gl='git log --oneline --graph --decorate -20'
 
 # --- Python: env/ + pip-tools (my convention) - ------------------------------
-# mkenv: create env/ and install requirements*.txt. Uses uv (much faster) when available, else pip-tools.
+# mkenv: create env/ (Python 3.12) and install requirements*.txt. Uses uv (much faster) when available, else pip-tools.
 # The files stay pip-tools compatible: requirements.in -> requirements.txt, same as always.
 mkenv() {
   local reqs=(requirements*.txt)
   if command -v uv >/dev/null; then
-    uv venv --seed --quiet env && source env/bin/activate || return 1
+    uv venv --python 3.12 --seed --quiet env && source env/bin/activate || return 1
     [[ -e "${reqs[0]}" ]] && uv pip sync --quiet "${reqs[@]}"
   else
-    python3 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools || return 1
+    if ! command -v python3.12 >/dev/null; then
+      echo "Python 3.12 not found: install python3.12 or run ./install.sh to get uv" >&2
+      return 1
+    fi
+    python3.12 -m venv env && source env/bin/activate && pip install -q --upgrade pip pip-tools || return 1
     [[ -e "${reqs[0]}" ]] && pip-sync "${reqs[@]}"
   fi
   echo "env/ ready ($(python --version))"
 }
-# lock: compile each requirements*.in into its .txt and sync env/ to exactly those versions
+# lock: compile each requirements*.in into its .txt (for Python 3.12) and sync env/ to exactly those versions
 lock() {
-  local f
+  local f pyver
+  # Without uv, pip-compile runs with the env's Python, so env/ must exist first
+  if ! command -v uv >/dev/null && [[ ! -d env ]]; then mkenv || return 1; fi
   for f in requirements*.in; do
     [[ -e "$f" ]] || continue
     if command -v uv >/dev/null; then
-      uv pip compile --quiet "$f" -o "${f%.in}.txt"
+      uv pip compile --quiet --python-version 3.12 "$f" -o "${f%.in}.txt"
     else
-      pip-compile -q "$f"
+      env/bin/python -m piptools compile -q "$f"
     fi
   done
-  # No env/ yet: create it (mkenv also syncs). Otherwise sync the existing one.
+  # No env/ yet: create it (mkenv also syncs). Otherwise sync the existing one, if it is Python 3.12.
   if [[ ! -d env ]]; then mkenv; return; fi
+  pyver=$(env/bin/python -c 'import sys; print("%d.%d" % sys.version_info[:2])')
+  if [[ "$pyver" != 3.12 ]]; then
+    echo "env/ uses Python $pyver; recreate it with: rm -rf env && mkenv" >&2
+    return 1
+  fi
   if command -v uv >/dev/null; then
     uv pip sync --quiet --python env/bin/python requirements*.txt
   else
